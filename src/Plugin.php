@@ -5,7 +5,12 @@ namespace imhomedia\issuu;
 use Craft;
 use craft\base\Model;
 use craft\base\Plugin as BasePlugin;
+use craft\elements\Asset;
+use craft\events\ModelEvent;
+use yii\base\Event;
+
 use imhomedia\issuu\models\Settings;
+
 
 /**
  * craft-issuu plugin
@@ -56,7 +61,28 @@ class Plugin extends BasePlugin
 
     private function attachEventHandlers(): void
     {
-        // Register event handlers here ...
-        // (see https://craftcms.com/docs/4.x/extend/events.html to get started)
+        Event::on(
+            Asset::class,
+            Asset::EVENT_AFTER_PROPAGATE,
+            static function (ModelEvent $event) {
+                $asset = $event->sender;
+
+                if($asset->extension == 'pdf' && !$asset->getIsDraft()) {
+                    Craft::info($asset->volume->handle, 'issuudebug');
+                }
+            }
+        );
+
+        Event::on(
+            Asset::class,
+            Asset::EVENT_AFTER_DELETE,
+            static function (Event $event) {
+                $asset = $event->sender;
+                if($asset->hardDelete) {
+                    //remove from issuu if file is hard deleted
+                    Craft::info("delete " . $asset, 'issuudebug');
+                }
+            }
+        );
     }
 }
