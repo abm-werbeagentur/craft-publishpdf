@@ -1,14 +1,14 @@
 {
-    "name": "imhomedia/craft-issuu",
-    "description": "Publish PDF files on Issuu",
+    "name": "imhomedia/craft-publishpdf",
+    "description": "Publish PDF files on Issuu or Yumpu",
     "type": "craft-plugin",
     "license": "proprietary",
     "support": {
         "email": "craft@imhomedia.at",
-        "issues": "https://github.com/imhomedia/craft-issuu.git/issues?state=open",
-        "source": "https://github.com/imhomedia/craft-issuu.git",
-        "docs": "https://github.com/imhomedia/craft-issuu.git",
-        "rss": "https://github.com/imhomedia/craft-issuu.git/releases.atom"
+        "issues": "https://github.com/imhomedia/craft-publishpdf.git/issues?state=open",
+        "source": "https://github.com/imhomedia/craft-publishpdf.git",
+        "docs": "https://github.com/imhomedia/craft-publishpdf.git",
+        "rss": "https://github.com/imhomedia/craft-publishpdf.git/releases.atom"
     },
     "require": {
         "php": ">=8.0.2",
@@ -20,14 +20,14 @@
     },
     "autoload": {
         "psr-4": {
-            "imhomedia\\issuu\\": "src/"
+            "imhomedia\\publishpdf\\": "src/"
         }
     },
     "extra": {
-        "handle": "craft-issuu",
-        "name": "craft-issuu",
+        "handle": "imhomedia-publishpdf",
+        "name": "Publish PDF files",
         "developer": "Imhomedia",
-        "documentationUrl": "https://github.com/imhomedia/craft-issuu.git"
+        "documentationUrl": "https://github.com/imhomedia/craft-publishpdf.git"
     },
     "scripts": {
         "check-cs": "ecs check --ansi",

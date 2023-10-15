@@ -1,6 +1,6 @@
-# craft-issuu
+# craft-publishpdf
 
-Publish PDF files on Issuu
+Publish PDF files on Issuu and Yumpuu
 
 ## Requirements
 
@@ -12,7 +12,7 @@ You can install this plugin from the Plugin Store or with Composer.
 
 #### From the Plugin Store
 
-Go to the Plugin Store in your project’s Control Panel and search for “craft-issuu”. Then press “Install”.
+Go to the Plugin Store in your project’s Control Panel and search for “craft-publishpdf”. Then press “Install”.
 
 #### With Composer
 
@@ -23,8 +23,8 @@ Open your terminal and run the following commands:
 cd /path/to/my-project.test
 
 # tell Composer to load the plugin
-composer require imhomedia/craft-issuu
+composer require imhomedia/craft-publishpdf
 
 # tell Craft to install the plugin
-./craft plugin/install craft-issuu
+./craft plugin/install craft-publishpdf
 ```

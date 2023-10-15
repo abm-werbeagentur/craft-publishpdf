@@ -1,6 +1,42 @@
-{# @var plugin \imhomedia\issuu\Plugin #}
-{# @var settings \imhomedia\issuu\models\Settings #}
+{# @var plugin \imhomedia\publishpdf\Plugin #}
+{# @var settings \imhomedia\publishpdf\models\Settings #}
+{% set selectedSubnavItem = 'imhomedia-publishpdf-settings' %}
+
 
 {% import '_includes/forms.twig' as forms %}
 
-{# ... #}
+<h2>Issuu Settings</h2>
+{{ forms.lightswitchField({
+    first: false,
+    id: 'issuuEnable',
+    name: 'issuuEnable',
+    label: 'Enable Issuu' | t('imhomedia-publishpdf'),
+    on: settings.issuuEnable
+}) }}
+
+
+{{ forms.textField({
+  label: 'Issuu API Token',
+  name: 'issuuApiToken',
+  value: settings.issuuApiToken
+}) }}
+
+<hr />
+
+<h2>Yumpu Settings</h2>
+
+{{ forms.lightswitchField({
+    first: false,
+    id: 'yumpuEnable',
+    name: 'yumpuEnable',
+    label: 'Enable Yumpu' | t('imhomedia-publishpdf'),
+    on: settings.yumpuEnable
+}) }}
+
+{{ forms.textField({
+  label: 'Yumpu API Token',
+  name: 'yumpuApiToken',
+  value: settings.yumpuApiToken
+}) }}
+
+{# Genböck Yumpu API Token: z8IeFtS6EMf1jLQbuT0WHayo7mxdJ4Oi #}
