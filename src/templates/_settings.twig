@@ -21,6 +21,14 @@
   value: settings.issuuApiToken
 }) }}
 
+{{ forms.lightswitchField({
+    first: false,
+    id: 'issuuDeleteIfAssetDeleted',
+    name: 'issuuDeleteIfAssetDeleted',
+    label: 'Delete from Issuu if asset is (hard) deleted' | t('imhomedia-publishpdf'),
+    on: settings.issuuDeleteIfAssetDeleted
+}) }}
+
 <hr />
 
 <h2>Yumpu Settings</h2>
@@ -37,6 +45,14 @@
   label: 'Yumpu API Token',
   name: 'yumpuApiToken',
   value: settings.yumpuApiToken
+}) }}
+
+{{ forms.lightswitchField({
+    first: false,
+    id: 'yumpuDeleteIfAssetDeleted',
+    name: 'yumpuDeleteIfAssetDeleted',
+    label: 'Delete from Yumpu if asset is (hard) deleted' | t('imhomedia-publishpdf'),
+    on: settings.yumpuDeleteIfAssetDeleted
 }) }}
 
 {# Genböck Yumpu API Token: z8IeFtS6EMf1jLQbuT0WHayo7mxdJ4Oi #}

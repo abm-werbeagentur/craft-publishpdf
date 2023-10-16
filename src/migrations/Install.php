@@ -7,8 +7,7 @@
 namespace imhomedia\publishpdf\migrations;
 
 use craft\db\Migration;
-use craft\helpers\Db;
-use craft\helpers\MigrationHelper;
+use craft\db\Table;
 
 use imhomedia\publishpdf\records\AssetRecord;
 
@@ -42,6 +41,15 @@ class Install extends Migration
             'dateUpdated' => $this->dateTime()->notNull(),
             'uid' => $this->uid(),
         ]);
+
+        $this->addForeignKey(null,
+            AssetRecord::tableName(),
+            'assetId',
+            Table::ASSETS,
+            'id',
+            'CASCADE',
+            'CASCADE'
+        );
     }
 
     public function dropTables(): void

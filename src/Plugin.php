@@ -109,24 +109,10 @@ class Plugin extends BasePlugin
                     $this->_registerPermissions();
                 }
 
-                $this->_attachEventHandlers();
                 $this->_registerCpRoutes();
+                $this->_attachEventHandlers();
                 $this->_registerTableAttributes();
                 $this->_addAssetActions();
-            }
-        });
-    }
-
-    protected function _addAssetActions(): void
-    {
-        Event::on(Asset::class, Asset::EVENT_REGISTER_ACTIONS, function(RegisterElementActionsEvent $event) {
-            if($this->getSettings()->issuuEnable) {
-                $event->actions[] = IssuuUploadAction::class;
-                $event->actions[] = IssuuDeleteAction::class;
-            }
-            if($this->getSettings()->yumpuEnable) {
-                $event->actions[] = YumpuUploadAction::class;
-                $event->actions[] = YumpuDeleteAction::class;
             }
         });
     }
@@ -163,12 +149,70 @@ class Plugin extends BasePlugin
             Asset::EVENT_AFTER_DELETE,
             static function (Event $event) {
                 $asset = $event->sender;
+                
                 if($asset->hardDelete) {
-                    //remove from issuu if file is hard deleted
-                    Craft::info("delete " . $asset, 'publishpdfdebug');
+                    //remove from publisher if file is hard deleted
+                    $thisPlugin = \imhomedia\publishpdf\Plugin::getInstance();
+
+                    /* remove from issuu if setting is true and asset is uploaded to isusu */
+                    if($thisPlugin->getSettings()->issuuDeleteIfAssetDeleted && $thisPlugin->issuu->isAssetUploaded($asset)) {
+                        Craft::info("delete asset from issuu " . $asset, 'publishpdfdebug');
+                    }
+                    
+                    /* remove from yumpu if setting is true and asset is uploaded to isusu */
+                    if($thisPlugin->getSettings()->yumpuDeleteIfAssetDeleted && $thisPlugin->yumpu->isAssetUploaded($asset)) {
+                        Craft::info("delete asset from yumpu " . $asset, 'publishpdfdebug');
+                    }
                 }
             }
         );
+    }
+
+    private function _registerTableAttributes()
+    {
+        Event::on(Asset::class, Asset::EVENT_REGISTER_TABLE_ATTRIBUTES, function (RegisterElementTableAttributesEvent $event) {
+            $event->tableAttributes['yumpu'] = [
+                'label' => Craft::t('imhomedia-publishpdf', 'Yumpu'),
+            ];
+            $event->tableAttributes['issuu'] = [
+                'label' => Craft::t('imhomedia-publishpdf', 'Issuu'),
+            ];
+        });
+
+        Event::on(Asset::class, Asset::EVENT_SET_TABLE_ATTRIBUTE_HTML, function (SetElementTableAttributeHtmlEvent $event) {
+            if ($event->attribute === 'yumpu') {
+                /** @var Asset $asset */
+                $asset = $event->sender;
+
+                $event->html = $this->yumpu->isAssetUploaded($asset);
+
+                // Prevent other event listeners from getting invoked
+                $event->handled = true;
+            }
+            if ($event->attribute === 'issuu') {
+                /** @var Asset $asset */
+                $asset = $event->sender;
+
+                $event->html = $this->issuu->isAssetUploaded($asset);
+
+                // Prevent other event listeners from getting invoked
+                $event->handled = true;
+            }
+        });
+    }
+
+    protected function _addAssetActions(): void
+    {
+        Event::on(Asset::class, Asset::EVENT_REGISTER_ACTIONS, function(RegisterElementActionsEvent $event) {
+            if($this->getSettings()->issuuEnable) {
+                $event->actions[] = IssuuUploadAction::class;
+                $event->actions[] = IssuuDeleteAction::class;
+            }
+            if($this->getSettings()->yumpuEnable) {
+                $event->actions[] = YumpuUploadAction::class;
+                $event->actions[] = YumpuDeleteAction::class;
+            }
+        });
     }
 
     private function _registerPermissions(): void
@@ -227,37 +271,4 @@ class Plugin extends BasePlugin
 
 		return $item;
 	}
-
-    private function _registerTableAttributes()
-    {
-        Event::on(Asset::class, Asset::EVENT_REGISTER_TABLE_ATTRIBUTES, function (RegisterElementTableAttributesEvent $event) {
-            $event->tableAttributes['yumpu'] = [
-                'label' => Craft::t('imhomedia-publishpdf', 'Yumpu'),
-            ];
-            $event->tableAttributes['issuu'] = [
-                'label' => Craft::t('imhomedia-publishpdf', 'Issuu'),
-            ];
-        });
-
-        Event::on(Asset::class, Asset::EVENT_SET_TABLE_ATTRIBUTE_HTML, function (SetElementTableAttributeHtmlEvent $event) {
-            if ($event->attribute === 'yumpu') {
-                /** @var Asset $asset */
-                $asset = $event->sender;
-
-                $event->html = $this->yumpu->isAssetUploaded($asset);
-
-                // Prevent other event listeners from getting invoked
-                $event->handled = true;
-            }
-            if ($event->attribute === 'issuu') {
-                /** @var Asset $asset */
-                $asset = $event->sender;
-
-                $event->html = $this->issuu->isAssetUploaded($asset);
-
-                // Prevent other event listeners from getting invoked
-                $event->handled = true;
-            }
-        });
-    }
 }
