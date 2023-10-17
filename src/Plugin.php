@@ -46,6 +46,7 @@ use imhomedia\publishpdf\services\Issuu as IssuuService;
 use craft\base\Model;
 use craft\base\Plugin as BasePlugin;
 use craft\elements\Asset;
+use craft\events\DefineBehaviorsEvent;
 use craft\events\ModelEvent;
 use craft\events\RegisterUrlRulesEvent;
 use craft\events\RegisterUserPermissionsEvent;
@@ -54,6 +55,7 @@ use craft\events\RegisterElementTableAttributesEvent;
 use craft\events\SetElementTableAttributeHtmlEvent;
 use craft\services\UserPermissions;
 use craft\web\UrlManager;
+use imhomedia\publishpdf\behaviors\AssetBehavior;
 use imhomedia\publishpdf\elements\actions\IssuuUploadAction;
 use imhomedia\publishpdf\elements\actions\IssuuDeleteAction;
 use imhomedia\publishpdf\elements\actions\YumpuUploadAction;
@@ -114,6 +116,8 @@ class Plugin extends BasePlugin
                 $this->_registerTableAttributes();
                 $this->_addAssetActions();
             }
+
+            $this->_attachBehaviors();
         });
     }
 
@@ -132,17 +136,17 @@ class Plugin extends BasePlugin
 
     private function _attachEventHandlers(): void
     {
-        Event::on(
-            Asset::class,
-            Asset::EVENT_AFTER_PROPAGATE,
-            static function (ModelEvent $event) {
-                $asset = $event->sender;
+        // Event::on(
+        //     Asset::class,
+        //     Asset::EVENT_AFTER_PROPAGATE,
+        //     static function (ModelEvent $event) {
+        //         $asset = $event->sender;
 
-                if($asset->extension == 'pdf' && !$asset->getIsDraft()) {
-                    Craft::info($asset->volume->handle, 'publishpdfdebug');
-                }
-            }
-        );
+        //         if($asset->extension == 'pdf' && !$asset->getIsDraft()) {
+        //             Craft::info($asset->volume->handle, 'publishpdfdebug');
+        //         }
+        //     }
+        // );
 
         Event::on(
             Asset::class,
@@ -157,11 +161,13 @@ class Plugin extends BasePlugin
                     /* remove from issuu if setting is true and asset is uploaded to isusu */
                     if($thisPlugin->getSettings()->issuuDeleteIfAssetDeleted && $thisPlugin->issuu->isAssetUploaded($asset)) {
                         Craft::info("delete asset from issuu " . $asset, 'publishpdfdebug');
+                        $thisPlugin->issuu->deleteAsset($asset);
                     }
                     
                     /* remove from yumpu if setting is true and asset is uploaded to isusu */
                     if($thisPlugin->getSettings()->yumpuDeleteIfAssetDeleted && $thisPlugin->yumpu->isAssetUploaded($asset)) {
                         Craft::info("delete asset from yumpu " . $asset, 'publishpdfdebug');
+                        $thisPlugin->yumpu->deleteAsset($asset);
                     }
                 }
             }
@@ -241,6 +247,17 @@ class Plugin extends BasePlugin
             $event->rules['imhomedia-publishpdf/issuu'] = 'imhomedia-publishpdf/issuu/index';
         });
 	}
+
+    private function _attachBehaviors(): void
+    {
+        Event::on(
+            Asset::class,
+            Asset::EVENT_DEFINE_BEHAVIORS,
+            function(DefineBehaviorsEvent $e) {
+                $e->behaviors['publishpdf'] = AssetBehavior::class;
+            }
+        );
+    }
 
     public function getCpNavItem (): ?array
 	{

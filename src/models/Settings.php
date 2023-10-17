@@ -14,7 +14,7 @@ class Settings extends Model
     public $issuuApiToken = '';
     public $issuuDeleteIfAssetDeleted = false;
 
-    public $yumpuEnable = false; /* https://github.com/Yumpu/Yumpu-SDK */
+    public $yumpuEnable = false;
     public $yumpuApiToken = '';
     public $yumpuDeleteIfAssetDeleted = false;
 }

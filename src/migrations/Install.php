@@ -35,7 +35,9 @@ class Install extends Migration
        $this->createTable(AssetRecord::$tableName, [
             'id' => $this->primaryKey(),
             'assetId' => $this->integer(),
+            'publisherId' => $this->integer(),
             'publisherHandle' => $this->string(50),
+            'publisherState' => $this->string(50),
             'publisherResponse' => $this->json(),
             'dateCreated' => $this->dateTime()->notNull(),
             'dateUpdated' => $this->dateTime()->notNull(),
