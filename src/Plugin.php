@@ -159,13 +159,13 @@ class Plugin extends BasePlugin
                     $thisPlugin = \imhomedia\publishpdf\Plugin::getInstance();
 
                     /* remove from issuu if setting is true and asset is uploaded to isusu */
-                    if($thisPlugin->getSettings()->issuuDeleteIfAssetDeleted && $thisPlugin->issuu->isAssetUploaded($asset)) {
+                    if($thisPlugin->getSettings()->issuuDeleteIfAssetDeleted && $thisPlugin->issuu->isUploaded($asset)) {
                         Craft::info("delete asset from issuu " . $asset, 'publishpdfdebug');
                         $thisPlugin->issuu->deleteAsset($asset);
                     }
                     
                     /* remove from yumpu if setting is true and asset is uploaded to isusu */
-                    if($thisPlugin->getSettings()->yumpuDeleteIfAssetDeleted && $thisPlugin->yumpu->isAssetUploaded($asset)) {
+                    if($thisPlugin->getSettings()->yumpuDeleteIfAssetDeleted && $thisPlugin->yumpu->isUploaded($asset)) {
                         Craft::info("delete asset from yumpu " . $asset, 'publishpdfdebug');
                         $thisPlugin->yumpu->deleteAsset($asset);
                     }
