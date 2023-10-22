@@ -8,11 +8,11 @@ namespace imhomedia\publishpdf\services;
 
 use Craft;
 use GuzzleHttp;
-use craft\base\Component;
 use craft\elements\Asset;
 use imhomedia\publishpdf\records\AssetRecord;
+use imhomedia\publishpdf\services\PublishPdfService;
 
-class Issuu extends Component
+class Issuu extends PublishPdfService
 {
     public $client = false;
     public static $handle = 'issuu';
@@ -65,24 +65,4 @@ class Issuu extends Component
 
 		return $EntryRaw ? $EntryRaw : null;
     }
-
-    /**
-     * check if an asset is already uploaded to Yumpu
-     */
-    function isAssetUploaded(Asset $asset): ?string
-    {
-        if($this->isUploaded($asset)) {
-            return $this->formatResults(Craft::t('imhomedia-publishpdf', 'yes'));
-        }
-        return $this->formatResults(Craft::t('imhomedia-publishpdf', 'no'));
-    }
-
-    /**
-     * format the result
-     */
-    function formatResults($string): string
-    {
-        return $string;
-    }
-    
 }

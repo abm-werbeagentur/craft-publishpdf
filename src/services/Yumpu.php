@@ -8,7 +8,6 @@ namespace imhomedia\publishpdf\services;
 
 use Craft;
 use GuzzleHttp;
-use craft\base\Component;
 use craft\elements\Asset;
 use imhomedia\publishpdf\records\AssetRecord;
 use imhomedia\publishpdf\services\PublishPdfService;
@@ -209,33 +208,6 @@ class Yumpu extends PublishPdfService
 		])->one();
 
 		return $EntryRaw ? $EntryRaw : null;
-    }
-    /**
-     * check if an asset is already uploaded to Yumpu
-     */
-    function isAssetUploaded(Asset $asset): ?string
-    {
-        if($this->isUploaded($asset)) { //use isUploaded to check progress
-            $AssetRecord = $this->getAssetRecord($asset);
-            if($AssetRecord == null) {
-                return $this->formatResults(Craft::t('imhomedia-publishpdf', '-'));
-            } else {
-                if($AssetRecord->publisherState == 'progress') {
-                    return $this->formatResults(Craft::t('imhomedia-publishpdf', 'in upload'));
-                } else if($AssetRecord->publisherState == 'completed') {
-                    return '<a href="https://www.yumpu.com/xx/document/view/'.$AssetRecord->publisherId.'" title="Visit Yumpu" rel="noopener" target="_blank" data-icon="world" aria-label="View"></a>';
-                }
-            }
-        }
-        return $this->formatResults(Craft::t('imhomedia-publishpdf', '-'));
-    }
-
-    /**
-     * format the result
-     */
-    function formatResults($string): string
-    {
-        return $string;
     }
     
 }
