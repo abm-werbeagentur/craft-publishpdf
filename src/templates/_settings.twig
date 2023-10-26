@@ -16,9 +16,15 @@
 
 
 {{ forms.textField({
-  label: 'Issuu API Token',
-  name: 'issuuApiToken',
-  value: settings.issuuApiToken
+  label: 'Issuu Secret',
+  name: 'issuuSecret',
+  value: settings.issuuSecret
+}) }}
+
+{{ forms.textField({
+  label: 'Issuu API Key',
+  name: 'issuuApiKey',
+  value: settings.issuuApiKey
 }) }}
 
 {{ forms.lightswitchField({

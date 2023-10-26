@@ -74,7 +74,7 @@ class AssetBehavior extends Behavior
         return false;
     }
 
-    public function yumpuGetId(): ?int
+    public function yumpuGetId(): ?string
     {
         if($AssetRecord = $this->_yumpuGetRecord($this->owner)) {
             return $AssetRecord->publisherId;

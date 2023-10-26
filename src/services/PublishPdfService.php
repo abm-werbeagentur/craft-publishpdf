@@ -30,17 +30,19 @@ class PublishPdfService extends Component
      */
     function isAssetUploaded(Asset $asset): ?string
     {
-        if($this->isUploaded($asset)) { //use isUploaded to check progress
-            $AssetRecord = $this->getAssetRecord($asset);
-            if($AssetRecord == null) {
-                return $this->formatResults(Craft::t('imhomedia-publishpdf', '-'));
+        $AssetRecord = $this->getAssetRecord($asset);
+        if($AssetRecord == null) {
+            return $this->formatResults(Craft::t('imhomedia-publishpdf', '-'));
+        } else if($AssetRecord->publisherState == 'progress') {
+            if($this->checkAssetProgress($AssetRecord)) {
+                //Todo: get new AssetRecord or not?
+                //$AssetRecord = $this->getAssetRecord($asset);
+                return '<a href="'.$AssetRecord->publisherUrl.'" title="Visit publisher url" rel="noopener" target="_blank" data-icon="world" aria-label="View"></a>';
             } else {
-                if($AssetRecord->publisherState == 'progress') {
-                    return $this->formatResults(Craft::t('imhomedia-publishpdf', 'in upload'));
-                } else if($AssetRecord->publisherState == 'completed') {
-                    return '<a href="'.$AssetRecord->publisherUrl.'" title="Visit Yumpu" rel="noopener" target="_blank" data-icon="world" aria-label="View"></a>';
-                }
+                return $this->formatResults(Craft::t('imhomedia-publishpdf', 'processing'));
             }
+        } else if($AssetRecord->publisherState == 'completed') {
+            return '<a href="'.$AssetRecord->publisherUrl.'" title="Visit publisher url" rel="noopener" target="_blank" data-icon="world" aria-label="View"></a>';
         }
         return $this->formatResults(Craft::t('imhomedia-publishpdf', '-'));
     }

@@ -35,7 +35,7 @@ class YumpuUploadAction extends ElementAction
         $return = \imhomedia\publishpdf\Plugin::getInstance()->yumpu->uploadAsset($asset);
         //Craft::info($return, 'publishpdfdebug');
         if($return === true) {
-            $this->message .= 'Asset '.$asset->filename.' uploaded';
+            $this->message .= 'Asset '.$asset->filename.' upload in progress';
         } else {
             $this->message .= $return;
         }

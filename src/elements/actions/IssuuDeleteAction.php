@@ -28,6 +28,9 @@ class IssuuDeleteAction extends ElementAction
 
     public function performAction(ElementQueryInterface $query): bool
     {
+        //check progress for recently uploaded documents:
+        \imhomedia\publishpdf\Plugin::getInstance()->issuu->checkProgress();
+
         //execute directly ... no queue here
         collect($query->all())
             ->map(fn($asset) => $this->delete($asset));
@@ -37,6 +40,7 @@ class IssuuDeleteAction extends ElementAction
 
     function delete(Asset $asset): void
     {
+        //delete asset
         $return = \imhomedia\publishpdf\Plugin::getInstance()->issuu->deleteAsset($asset);
         if($return === true) {
             $this->message .= 'Asset '.$asset->filename.' deleted from Issuu';

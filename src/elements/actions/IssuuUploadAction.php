@@ -34,7 +34,7 @@ class IssuuUploadAction extends ElementAction
     {
         $return = \imhomedia\publishpdf\Plugin::getInstance()->issuu->uploadAsset($asset);
         if($return === true) {
-            $this->message .= 'Asset '.$asset->filename.' uploaded';
+            $this->message .= 'Asset '.$asset->filename.' upload in progress';
         } else {
             $this->message .= $return;
         }

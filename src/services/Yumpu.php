@@ -55,7 +55,6 @@ class Yumpu extends PublishPdfService
 
     function getCategories()
     {
-        //curl -X GET -H "X-ACCESS-TOKEN: YOUR_ACCESS_TOKEN" "https://api.yumpu.com/2.0/document/categories.json"
         try {
             $response = $this->client->request('GET', 'https://api.yumpu.com/2.0/document/categories.json');
         } catch (\Exception $e) {
@@ -68,7 +67,6 @@ class Yumpu extends PublishPdfService
 
     function getDocuments()
     {
-        //curl -X GET -H "X-ACCESS-TOKEN: YOUR_ACCESS_TOKEN" "https://api.yumpu.com/2.0/documents.json?offset=0&limit=1&sort=desc"
         try {
             $response = $this->client->request('GET', 'https://api.yumpu.com/2.0/documents.json');
         } catch (\Exception $e) {
@@ -133,7 +131,7 @@ class Yumpu extends PublishPdfService
     function deleteAsset(Asset $asset): bool|string
     {
         $AssetRecord = $this->getAssetRecord($asset);
-        if($AssetRecord) {
+        if($AssetRecord && $AssetRecord->publisherState == 'completed') {
             try {
                 $this->client->request('DELETE', 'https://api.yumpu.com/2.0/document.json', [
                     'form_params' => [
@@ -164,34 +162,39 @@ class Yumpu extends PublishPdfService
 
         if($EntryRaw) {
             if($EntryRaw->publisherState == 'progress') {
-                try {
-                    $response = $this->client->request('GET', 'https://api.yumpu.com/2.0/document/progress.json', [
-                        'query' => [
-                            'id' => $EntryRaw->publisherId
-                        ]
-                    ]);
-                } catch (\Exception $e) {
-                    return false;
-                }
-                $stream = $response->getBody();
-                $contents = json_decode($stream->getContents());
-                Craft::info("1:" . gettype($contents), 'publishpdfdebug');
-                Craft::info("2:" . gettype($contents->document), 'publishpdfdebug');
-                Craft::info($contents->document, 'publishpdfdebug');
-                
-                if(isset($contents->document[0]->id)) {
-                    $EntryRaw->publisherState = 'completed';
-                    $EntryRaw->publisherId = $contents->document[0]->id;
-                    $EntryRaw->publisherResponse = json_encode($contents);
-                    $EntryRaw->publisherUrl = $contents->document[0]->url;
-                    $EntryRaw->publisherEmbedCode = $contents->document[0]->embed_code;
-                    $EntryRaw->update();
-                    Craft::info('update', 'publishpdfdebug');
+                if($this->checkAssetProgress($EntryRaw)) {
                     return true;
                 }
+                return false;
             } else if($EntryRaw->publisherState == 'completed') {
                 return true;
             }
+        }
+        return false;
+    }
+
+    public function checkAssetProgress(AssetRecord &$EntryRaw): bool
+    {
+        try {
+            $response = $this->client->request('GET', 'https://api.yumpu.com/2.0/document/progress.json', [
+                'query' => [
+                    'id' => $EntryRaw->publisherId
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return false;
+        }
+        $stream = $response->getBody();
+        $contents = json_decode($stream->getContents());
+        
+        if(is_array($contents->document) && isset($contents->document[0]->id)) {
+            $EntryRaw->publisherState = 'completed';
+            $EntryRaw->publisherId = $contents->document[0]->id;
+            $EntryRaw->publisherResponse = json_encode($contents);
+            $EntryRaw->publisherUrl = $contents->document[0]->url;
+            $EntryRaw->publisherEmbedCode = $contents->document[0]->embed_code;
+            $EntryRaw->update();
+            return true;
         }
         return false;
     }

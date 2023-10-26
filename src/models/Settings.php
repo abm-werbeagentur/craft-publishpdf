@@ -11,7 +11,8 @@ use craft\base\Model;
 class Settings extends Model
 {
     public $issuuEnable = false;
-    public $issuuApiToken = '';
+    public $issuuSecret = '';
+    public $issuuApiKey = '';
     public $issuuDeleteIfAssetDeleted = false;
 
     public $yumpuEnable = false;

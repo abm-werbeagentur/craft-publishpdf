@@ -160,13 +160,13 @@ class Plugin extends BasePlugin
 
                     /* remove from issuu if setting is true and asset is uploaded to isusu */
                     if($thisPlugin->getSettings()->issuuDeleteIfAssetDeleted && $thisPlugin->issuu->isUploaded($asset)) {
-                        Craft::info("delete asset from issuu " . $asset, 'publishpdfdebug');
+                        // Craft::info("delete asset from issuu " . $asset, 'publishpdfdebug');
                         $thisPlugin->issuu->deleteAsset($asset);
                     }
                     
                     /* remove from yumpu if setting is true and asset is uploaded to isusu */
                     if($thisPlugin->getSettings()->yumpuDeleteIfAssetDeleted && $thisPlugin->yumpu->isUploaded($asset)) {
-                        Craft::info("delete asset from yumpu " . $asset, 'publishpdfdebug');
+                        // Craft::info("delete asset from yumpu " . $asset, 'publishpdfdebug');
                         $thisPlugin->yumpu->deleteAsset($asset);
                     }
                 }
@@ -264,9 +264,9 @@ class Plugin extends BasePlugin
 		$item = parent::getCpNavItem();
 		$currentUser = Craft::$app->user;
 
-		$subNav = [
-			'imhomedia-publishpdf-dashboard' => ['label' => 'Dashboard', 'url' => 'imhomedia-publishpdf'],
-		];
+		// $subNav = [
+		// 	'imhomedia-publishpdf-dashboard' => ['label' => 'Dashboard', 'url' => 'imhomedia-publishpdf'],
+		// ];
         
         if($this->settings->issuuEnable) {
             $subNav['imhomedia-publishpdf-issuu'] = [

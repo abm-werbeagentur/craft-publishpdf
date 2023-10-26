@@ -18,13 +18,63 @@ class Issuu extends PublishPdfService
     public static $handle = 'issuu';
 
     function __construct() {
-        $token = \imhomedia\publishpdf\Plugin::getInstance()->getSettings()->issuuApiToken;
+        $token = \imhomedia\publishpdf\Plugin::getInstance()->getSettings()->issuuApiKey;
         $this->client = new GuzzleHttp\Client(['headers' => ['X-ACCESS-TOKEN' => $token]]);
+    }
+
+    private function _signRequest(array $postVars): array
+    {
+        $signVars = $postVars;
+		ksort($signVars);
+		$doc_signature = \imhomedia\publishpdf\Plugin::getInstance()->getSettings()->issuuSecret;
+		foreach($signVars as $key=>$value) {
+			$doc_signature .= $key.$value;
+		}
+		
+		$postVars['signature'] = md5($doc_signature);
+        return $postVars;
+    }
+
+    private function _checkResponseError($response): bool|string
+    {
+        $stream = $response->getBody();
+        $contents = json_decode($stream->getContents());
+        if(isset($contents->rsp->_content->error)) {
+            return "Error code " . $contents->rsp->_content->error->code . " - " . $contents->rsp->_content->error->message;
+        }
+        return false;
     }
 
     function getDocuments()
     {
-        return null;
+        $query = [
+            'action' => 'issuu.documents.list',
+            'apiKey' => \imhomedia\publishpdf\Plugin::getInstance()->getSettings()->issuuApiKey,
+            'access' => 'public',
+            'format' => 'json'
+        ];
+        $query = $this->_signRequest($query);
+        try {
+            $response = $this->client->request('GET', 'https://api.issuu.com/1_0', [
+                'query' => $query
+            ]);
+        } catch (\Exception $e) {
+            return null;
+        }
+        $error = $this->_checkResponseError($response);
+        if($error !== false) {
+            return array(
+                'error' => true,
+                'msg' => $error
+            );
+        }
+        $stream = $response->getBody();
+        $contents = json_decode($stream->getContents());
+        Craft::info($contents, 'publishpdfdebug');
+        return array(
+            'error' => false,
+            'documents' => $contents->rsp
+        );
     }
 
     function uploadAsset(Asset $asset): bool
@@ -64,5 +114,10 @@ class Issuu extends PublishPdfService
 		])->one();
 
 		return $EntryRaw ? $EntryRaw : null;
+    }
+
+    public function checkAssetProgress(AssetRecord &$EntryRaw): bool
+    {
+        return false;
     }
 }
