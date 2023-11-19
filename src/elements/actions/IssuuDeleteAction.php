@@ -50,14 +50,13 @@ class IssuuDeleteAction extends ElementAction
 
     public function getTriggerHtml(): ?string
     {
-        // Only enable for duplicatable elements, per canDuplicate()
         Craft::$app->getView()->registerJsWithVars(fn($type) => <<<JS
 (() => {
     new Craft.ElementActionTrigger({
         type: $type,
         validateSelection: \$selectedItems => {
             for (let i = 0; i < \$selectedItems.length; i++) {
-                if(\$selectedItems.eq(i).find('.element').data('kind') != 'pdf') {
+                if(\$selectedItems.eq(i).find('.element').data('kind') != 'pdf' && \$selectedItems.eq(i).find('.element').data('kind') != 'word') {
                     return false;
                 }
             }

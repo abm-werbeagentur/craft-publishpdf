@@ -87,8 +87,8 @@ class Issuu extends PublishPdfService
     function uploadAsset(Asset $asset): bool|string
     {
         $do_upload = true;
-        if($asset->getExtension() !== 'pdf') {
-            return Craft::t('imhomedia-publishpdf', 'Only pdf files can be uploaded to issuu');
+        if(!in_array($asset->getExtension(), array('pdf', 'doc', 'docx'))) {
+            return Craft::t('imhomedia-publishpdf', 'Only pdf, doc, docx files can be uploaded to issuu');
         }
         if($this->isUploaded($asset)) {
             //TODO: check isUploaded ... issuu upload older than asset ... then upload
