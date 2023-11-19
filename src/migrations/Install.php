@@ -40,6 +40,7 @@ class Install extends Migration
             'publisherState' => $this->string(50),
             'publisherResponse' => $this->text(),
             'publisherUrl' => $this->text(),
+            'publisherEmbedUrl' => $this->text(),
             'publisherEmbedCode' => $this->text(),
             'dateCreated' => $this->dateTime()->notNull(),
             'dateUpdated' => $this->dateTime()->notNull(),

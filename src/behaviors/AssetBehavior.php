@@ -30,7 +30,7 @@ class AssetBehavior extends Behavior
         return false;
     }
 
-    public function issuuGetId(): ?int
+    public function issuuGetId(): ?string
     {
         if($AssetRecord = $this->_issuuGetRecord($this->owner)) {
             return $AssetRecord->publisherId;
@@ -42,6 +42,14 @@ class AssetBehavior extends Behavior
     {
         if($AssetRecord = $this->_issuuGetRecord($this->owner)) {
             return $AssetRecord->publisherUrl;
+        }
+        return null;
+    }
+
+    public function issuuGetEmbedUrl(): ?string
+    {
+        if($AssetRecord = $this->_issuuGetRecord($this->owner)) {
+            return $AssetRecord->publisherEmbedUrl;
         }
         return null;
     }
@@ -86,6 +94,14 @@ class AssetBehavior extends Behavior
     {
         if($AssetRecord = $this->_yumpuGetRecord($this->owner)) {
             return $AssetRecord->publisherUrl;
+        }
+        return null;
+    }
+
+    public function yumpuGetEmbedUrl(): ?string
+    {
+        if($AssetRecord = $this->_yumpuGetRecord($this->owner)) {
+            return $AssetRecord->publisherEmbedUrl;
         }
         return null;
     }

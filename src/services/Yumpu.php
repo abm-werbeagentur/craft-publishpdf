@@ -113,8 +113,8 @@ class Yumpu extends PublishPdfService
             $contents = json_decode($stream->getContents());
 
             if($contents->state == 'success') {
-                Craft::info($contents->progress_id, 'publishpdfdebug');
-                Craft::info(json_encode($contents), 'publishpdfdebug');
+                // Craft::info($contents->progress_id, 'publishpdfdebug');
+                // Craft::info(json_encode($contents), 'publishpdfdebug');
                 $AssetRecord = new AssetRecord();
                 $AssetRecord->assetId = $asset->id;
                 $AssetRecord->publisherHandle = self::$handle;
@@ -192,6 +192,7 @@ class Yumpu extends PublishPdfService
             $EntryRaw->publisherId = $contents->document[0]->id;
             $EntryRaw->publisherResponse = json_encode($contents);
             $EntryRaw->publisherUrl = $contents->document[0]->url;
+            $EntryRaw->publisherEmbedUrl = "https://www.yumpu.com/de/embed/view/".$contents->document[0]->id;
             $EntryRaw->publisherEmbedCode = $contents->document[0]->embed_code;
             $EntryRaw->update();
             return true;

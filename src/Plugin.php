@@ -136,21 +136,9 @@ class Plugin extends BasePlugin
 
     private function _attachEventHandlers(): void
     {
-        // Event::on(
-        //     Asset::class,
-        //     Asset::EVENT_AFTER_PROPAGATE,
-        //     static function (ModelEvent $event) {
-        //         $asset = $event->sender;
-
-        //         if($asset->extension == 'pdf' && !$asset->getIsDraft()) {
-        //             Craft::info($asset->volume->handle, 'publishpdfdebug');
-        //         }
-        //     }
-        // );
-
         Event::on(
             Asset::class,
-            Asset::EVENT_AFTER_DELETE,
+            Asset::EVENT_BEFORE_DELETE,
             static function (Event $event) {
                 $asset = $event->sender;
                 
@@ -160,13 +148,11 @@ class Plugin extends BasePlugin
 
                     /* remove from issuu if setting is true and asset is uploaded to isusu */
                     if($thisPlugin->getSettings()->issuuDeleteIfAssetDeleted && $thisPlugin->issuu->isUploaded($asset)) {
-                        // Craft::info("delete asset from issuu " . $asset, 'publishpdfdebug');
                         $thisPlugin->issuu->deleteAsset($asset);
                     }
                     
                     /* remove from yumpu if setting is true and asset is uploaded to isusu */
                     if($thisPlugin->getSettings()->yumpuDeleteIfAssetDeleted && $thisPlugin->yumpu->isUploaded($asset)) {
-                        // Craft::info("delete asset from yumpu " . $asset, 'publishpdfdebug');
                         $thisPlugin->yumpu->deleteAsset($asset);
                     }
                 }

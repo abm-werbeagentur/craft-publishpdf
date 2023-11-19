@@ -12,6 +12,12 @@ use craft\elements\Asset;
 
 class PublishPdfService extends Component
 {
+    function handleIssuuException($exception): bool|string
+    {
+        Craft::info('handleIssuuException', 'publishpdfdebug');
+        Craft::info($exception, 'publishpdfdebug');
+        return false;
+    }
     function handleYumpuException($exception): bool|string
     {
         Craft::info('handleYumpuException', 'publishpdfdebug');

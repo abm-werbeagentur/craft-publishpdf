@@ -10,6 +10,7 @@ use Craft\elements\db\ElementQueryInterface;
 class IssuuUploadAction extends ElementAction
 {
     public $message = '';
+    public $uploadReturn = true;
 
     public static function displayName(): string
     {
@@ -27,16 +28,18 @@ class IssuuUploadAction extends ElementAction
         collect($query->all())
             ->map(fn($asset) => $this->upload($asset));
 
-        return true;
+        return $this->uploadReturn;
     }
 
     function upload(Asset $asset): void
     {
         $return = \imhomedia\publishpdf\Plugin::getInstance()->issuu->uploadAsset($asset);
+
         if($return === true) {
             $this->message .= 'Asset '.$asset->filename.' upload in progress';
         } else {
             $this->message .= $return;
+            $this->uploadReturn = false;
         }
     }
 

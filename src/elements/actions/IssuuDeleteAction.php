@@ -10,6 +10,7 @@ use Craft\elements\db\ElementQueryInterface;
 class IssuuDeleteAction extends ElementAction
 {
     public string $message = '';
+    public $deleteReturn = true;
 
     public static function displayName(): string
     {
@@ -28,14 +29,11 @@ class IssuuDeleteAction extends ElementAction
 
     public function performAction(ElementQueryInterface $query): bool
     {
-        //check progress for recently uploaded documents:
-        \imhomedia\publishpdf\Plugin::getInstance()->issuu->checkProgress();
-
         //execute directly ... no queue here
         collect($query->all())
             ->map(fn($asset) => $this->delete($asset));
 
-        return true;
+        return $this->deleteReturn;
     }
 
     function delete(Asset $asset): void
@@ -46,6 +44,7 @@ class IssuuDeleteAction extends ElementAction
             $this->message .= 'Asset '.$asset->filename.' deleted from Issuu';
         } else {
             $this->message .= $return;
+            $this->deleteReturn = false;
         }
     }
 
