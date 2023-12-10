@@ -215,6 +215,12 @@ class Issuu extends PublishPdfService
         return Craft::t('imhomedia-publishpdf', 'Asset not present on issuu');
     }
 
+    function replaceAsset(Asset $asset): bool|string
+    {
+        $this->deleteAsset($asset);
+        return $this->uploadAsset($asset);
+    }
+
     function isUploaded(Asset $asset): ?bool
     {
         if(!\imhomedia\publishpdf\Plugin::getInstance()->getSettings()->issuuEnable) {

@@ -53,6 +53,8 @@ use craft\events\RegisterUserPermissionsEvent;
 use craft\events\RegisterElementActionsEvent;
 use craft\events\RegisterElementTableAttributesEvent;
 use craft\events\SetElementTableAttributeHtmlEvent;
+use craft\events\ReplaceAssetEvent;
+use craft\services\Assets;
 use craft\services\UserPermissions;
 use craft\web\UrlManager;
 use imhomedia\publishpdf\behaviors\AssetBehavior;
@@ -155,6 +157,24 @@ class Plugin extends BasePlugin
                     if($thisPlugin->getSettings()->yumpuDeleteIfAssetDeleted && $thisPlugin->yumpu->isUploaded($asset)) {
                         $thisPlugin->yumpu->deleteAsset($asset);
                     }
+                }
+            }
+        );
+        Event::on(
+            Assets::class,
+            Assets::EVENT_AFTER_REPLACE_ASSET,
+            static function (ReplaceAssetEvent $event) {
+                $asset = $event->asset;
+                $thisPlugin = \imhomedia\publishpdf\Plugin::getInstance();
+
+                if($thisPlugin->issuu->isUploaded($asset)) {
+                    //asset is uploaded to issuu and should get replaced
+                    $thisPlugin->issuu->replaceAsset($asset);
+                }
+
+                if($thisPlugin->yumpu->isUploaded($asset)) {
+                    //asset is uploaded to yumpu and should get replaced
+                    $thisPlugin->yumpu->replaceAsset($asset);
                 }
             }
         );

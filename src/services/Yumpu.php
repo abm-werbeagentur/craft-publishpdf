@@ -145,7 +145,12 @@ class Yumpu extends PublishPdfService
             return true;
         }
         return Craft::t('imhomedia-publishpdf', 'Asset not present on yumpu');
-        
+    }
+
+    function replaceAsset(Asset $asset): bool|string
+    {
+        $this->deleteAsset($asset);
+        return $this->uploadAsset($asset);
     }
 
     function isUploaded(Asset $asset): bool
