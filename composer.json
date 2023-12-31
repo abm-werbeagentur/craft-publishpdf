@@ -1,14 +1,20 @@
 {
-    "name": "imhomedia/craft-publishpdf",
+    "name": "abmat/craft-publishpdf",
     "description": "Publish PDF files on Issuu or Yumpu",
     "type": "craft-plugin",
     "license": "proprietary",
+	"authors": [
+	  {
+		"name": "ABM Feregyhazy & Simon GmbH",
+		"homepage": "https://www.abm.at"
+	  }
+	],
     "support": {
-        "email": "craft@imhomedia.at",
-        "issues": "https://github.com/imhomedia/craft-publishpdf.git/issues?state=open",
-        "source": "https://github.com/imhomedia/craft-publishpdf.git",
-        "docs": "https://github.com/imhomedia/craft-publishpdf.git",
-        "rss": "https://github.com/imhomedia/craft-publishpdf.git/releases.atom"
+        "email": "office@abm.at",
+        "issues": "https://github.com/abm-werbeagentur/craft-publishpdf/issues?state=open",
+        "source": "https://github.com/abm-werbeagentur/craft-publishpdf",
+        "docs": "https://github.com/abm-werbeagentur/craft-publishpdf",
+        "rss": "https://github.com/abm-werbeagentur/craft-publishpdf/releases.atom"
     },
     "require": {
         "php": ">=8.0.2",
@@ -20,14 +26,14 @@
     },
     "autoload": {
         "psr-4": {
-            "imhomedia\\publishpdf\\": "src/"
+            "abmat\\publishpdf\\": "src/"
         }
     },
     "extra": {
-        "handle": "imhomedia-publishpdf",
+        "handle": "abmat-publishpdf",
         "name": "Publish PDF files",
-        "developer": "Imhomedia",
-        "documentationUrl": "https://github.com/imhomedia/craft-publishpdf.git"
+        "developer": "ABM Feregyhazy & Simon GmbH",
+        "documentationUrl": "https://github.com/abm-werbeagentur/craft-publishpdf"
     },
     "scripts": {
         "check-cs": "ecs check --ansi",

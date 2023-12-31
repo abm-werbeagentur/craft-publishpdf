@@ -1,6 +1,6 @@
-{# @var plugin \imhomedia\publishpdf\Plugin #}
-{# @var settings \imhomedia\publishpdf\models\Settings #}
-{% set selectedSubnavItem = 'imhomedia-publishpdf-settings' %}
+{# @var plugin \abmat\publishpdf\Plugin #}
+{# @var settings \abmat\publishpdf\models\Settings #}
+{% set selectedSubnavItem = 'abmat-publishpdf-settings' %}
 
 
 {% import '_includes/forms.twig' as forms %}
@@ -10,7 +10,7 @@
     first: false,
     id: 'issuuEnable',
     name: 'issuuEnable',
-    label: 'Enable Issuu' | t('imhomedia-publishpdf'),
+    label: 'Enable Issuu' | t('abmat-publishpdf'),
     on: settings.issuuEnable
 }) }}
 
@@ -37,7 +37,7 @@
     first: false,
     id: 'issuuDeleteIfAssetDeleted',
     name: 'issuuDeleteIfAssetDeleted',
-    label: 'Delete from Issuu if asset is (hard) deleted' | t('imhomedia-publishpdf'),
+    label: 'Delete from Issuu if asset is (hard) deleted' | t('abmat-publishpdf'),
     on: settings.issuuDeleteIfAssetDeleted
 }) }}
 
@@ -49,7 +49,7 @@
     first: false,
     id: 'yumpuEnable',
     name: 'yumpuEnable',
-    label: 'Enable Yumpu' | t('imhomedia-publishpdf'),
+    label: 'Enable Yumpu' | t('abmat-publishpdf'),
     on: settings.yumpuEnable
 }) }}
 
@@ -63,7 +63,7 @@
     first: false,
     id: 'yumpuDeleteIfAssetDeleted',
     name: 'yumpuDeleteIfAssetDeleted',
-    label: 'Delete from Yumpu if asset is (hard) deleted' | t('imhomedia-publishpdf'),
+    label: 'Delete from Yumpu if asset is (hard) deleted' | t('abmat-publishpdf'),
     on: settings.yumpuDeleteIfAssetDeleted
 }) }}
 

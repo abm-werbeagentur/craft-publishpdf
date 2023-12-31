@@ -1,15 +1,15 @@
 <?php
 /**
- * @link https://www.imhomedia.at
- * @copyright Copyright (c) Imhomedia
+ * @link https://abm.at
+ * @copyright Copyright (c) abm Feregyhazy & Simon GmbH
 */
 
-namespace imhomedia\publishpdf\migrations;
+namespace abmat\publishpdf\migrations;
 
 use craft\db\Migration;
 use craft\db\Table;
 
-use imhomedia\publishpdf\records\AssetRecord;
+use abmat\publishpdf\records\AssetRecord;
 
 class Install extends Migration
 {

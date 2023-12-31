@@ -1,16 +1,16 @@
 <?php
 /**
- * @link https://www.imhomedia.at
- * @copyright Copyright (c) Imhomedia
+ * @link https://abm.at
+ * @copyright Copyright (c) abm Feregyhazy & Simon GmbH
 */
 
-namespace imhomedia\publishpdf\services;
+namespace abmat\publishpdf\services;
 
 use Craft;
 use GuzzleHttp;
 use craft\elements\Asset;
-use imhomedia\publishpdf\records\AssetRecord;
-use imhomedia\publishpdf\services\PublishPdfService;
+use abmat\publishpdf\records\AssetRecord;
+use abmat\publishpdf\services\PublishPdfService;
 
 class Yumpu extends PublishPdfService
 {
@@ -18,7 +18,7 @@ class Yumpu extends PublishPdfService
     public static $handle = 'yumpu';
 
     function __construct() {
-        $token = \imhomedia\publishpdf\Plugin::getInstance()->getSettings()->yumpuApiToken;
+        $token = \abmat\publishpdf\Plugin::getInstance()->getSettings()->yumpuApiToken;
         $this->client = new GuzzleHttp\Client(['headers' => ['X-ACCESS-TOKEN' => $token]]);
     }
 
@@ -82,7 +82,7 @@ class Yumpu extends PublishPdfService
     {
         $do_upload = true;
         if($asset->getExtension() !== 'pdf') {
-            return Craft::t('imhomedia-publishpdf', 'Only pdf files can be uploaded to yumpu');
+            return Craft::t('abmat-publishpdf', 'Only pdf files can be uploaded to yumpu');
         }
         if($this->isUploaded($asset)) {
             //TODO: check isUploaded ... yumpu upload older than asset ... then upload
@@ -125,7 +125,7 @@ class Yumpu extends PublishPdfService
                 return true;
             }
         }
-        return Craft::t('imhomedia-publishpdf', 'Asset already uploaded to yumpu');
+        return Craft::t('abmat-publishpdf', 'Asset already uploaded to yumpu');
     }
 
     function deleteAsset(Asset $asset): bool|string
@@ -144,7 +144,7 @@ class Yumpu extends PublishPdfService
             $AssetRecord->delete();
             return true;
         }
-        return Craft::t('imhomedia-publishpdf', 'Asset not present on yumpu');
+        return Craft::t('abmat-publishpdf', 'Asset not present on yumpu');
     }
 
     function replaceAsset(Asset $asset): bool|string
@@ -155,7 +155,7 @@ class Yumpu extends PublishPdfService
 
     function isUploaded(Asset $asset): bool
     {
-        if(!\imhomedia\publishpdf\Plugin::getInstance()->getSettings()->yumpuEnable) {
+        if(!\abmat\publishpdf\Plugin::getInstance()->getSettings()->yumpuEnable) {
             return false;
         }
 
@@ -207,7 +207,7 @@ class Yumpu extends PublishPdfService
 
     function getAssetRecord(Asset $asset): ?AssetRecord
     {
-        if(!\imhomedia\publishpdf\Plugin::getInstance()->getSettings()->yumpuEnable) {
+        if(!\abmat\publishpdf\Plugin::getInstance()->getSettings()->yumpuEnable) {
             return null;
         }
 

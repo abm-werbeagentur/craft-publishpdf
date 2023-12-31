@@ -1,26 +1,26 @@
 <?php
 /**
- * @link https://www.imhomedia.at
- * @copyright Copyright (c) Imhomedia
+ * @link https://abm.at
+ * @copyright Copyright (c) abm Feregyhazy & Simon GmbH
 */
 
-namespace imhomedia\publishpdf\controllers;
+namespace abmat\publishpdf\controllers;
 
 use craft\web\Controller;
-use imhomedia\publishpdf\services\Yumpu;
+use abmat\publishpdf\services\Yumpu;
 
 class YumpuController extends Controller {
 	
 	public function actionIndex ()
 	{
-        $token = \imhomedia\publishpdf\Plugin::getInstance()->getSettings()->yumpuApiToken;
+        $token = \abmat\publishpdf\Plugin::getInstance()->getSettings()->yumpuApiToken;
         if(!$token) {
-            return $this->renderTemplate('imhomedia-publishpdf/_yumpu/error_token');
+            return $this->renderTemplate('abmat-publishpdf/_yumpu/error_token');
         } else {
             $yumpuService = new Yumpu();
             $categories = $yumpuService->getCategories();
             $documents = $yumpuService->getDocuments();
-            return $this->renderTemplate('imhomedia-publishpdf/_yumpu/index', ['categories' => $categories, 'documents' => $documents]);
+            return $this->renderTemplate('abmat-publishpdf/_yumpu/index', ['categories' => $categories, 'documents' => $documents]);
         }
 	}
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace imhomedia\publishpdf\models;
+namespace abmat\publishpdf\models;
 
 use Craft;
 use craft\base\Model;

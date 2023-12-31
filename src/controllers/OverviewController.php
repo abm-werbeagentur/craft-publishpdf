@@ -1,10 +1,10 @@
 <?php
 /**
- * @link https://www.imhomedia.at
- * @copyright Copyright (c) Imhomedia
+ * @link https://abm.at
+ * @copyright Copyright (c) abm Feregyhazy & Simon GmbH
 */
 
-namespace imhomedia\publishpdf\controllers;
+namespace abmat\publishpdf\controllers;
 
 use craft\web\Controller;
 
@@ -13,6 +13,6 @@ class OverviewController extends Controller {
 	
 	public function actionIndex ()
 	{
-		return $this->renderTemplate('imhomedia-publishpdf/_overview/index', []);
+		return $this->renderTemplate('abmat-publishpdf/_overview/index', []);
 	}
 }

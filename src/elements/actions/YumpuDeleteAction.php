@@ -1,6 +1,6 @@
 <?php
 
-namespace imhomedia\publishpdf\elements\actions;
+namespace abmat\publishpdf\elements\actions;
 
 use Craft;
 use craft\base\ElementAction;
@@ -13,7 +13,7 @@ class YumpuDeleteAction extends ElementAction
 
     public static function displayName(): string
     {
-        return Craft::t('imhomedia-publishpdf', 'Delete from Yumpu');
+        return Craft::t('abmat-publishpdf', 'Delete from Yumpu');
     }
 
     public function getMessage(): ?string
@@ -23,7 +23,7 @@ class YumpuDeleteAction extends ElementAction
 
     public function getConfirmationMessage(): ?string
     {
-        return Craft::t('imhomedia-publishpdf', 'Really delete from Yumpu?');
+        return Craft::t('abmat-publishpdf', 'Really delete from Yumpu?');
     }
 
     public function performAction(ElementQueryInterface $query): bool
@@ -37,7 +37,7 @@ class YumpuDeleteAction extends ElementAction
 
     function delete(Asset $asset): void
     {
-        $return = \imhomedia\publishpdf\Plugin::getInstance()->yumpu->deleteAsset($asset);
+        $return = \abmat\publishpdf\Plugin::getInstance()->yumpu->deleteAsset($asset);
         if($return === true) {
             $this->message .= 'Asset '.$asset->filename.' deleted from Yumpu';
         } else {

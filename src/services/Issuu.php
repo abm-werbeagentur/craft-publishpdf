@@ -1,17 +1,17 @@
 <?php
 /**
- * @link https://www.imhomedia.at
- * @copyright Copyright (c) Imhomedia
+ * @link https://abm.at
+ * @copyright Copyright (c) abm Feregyhazy & Simon GmbH
 */
 
-namespace imhomedia\publishpdf\services;
+namespace abmat\publishpdf\services;
 
 use Craft;
 use GuzzleHttp;
 use craft\elements\Asset;
 use craft\helpers\UrlHelper;
-use imhomedia\publishpdf\records\AssetRecord;
-use imhomedia\publishpdf\services\PublishPdfService;
+use abmat\publishpdf\records\AssetRecord;
+use abmat\publishpdf\services\PublishPdfService;
 
 class Issuu extends PublishPdfService
 {
@@ -19,7 +19,7 @@ class Issuu extends PublishPdfService
     public static $handle = 'issuu';
 
     function __construct() {
-        $token = \imhomedia\publishpdf\Plugin::getInstance()->getSettings()->issuuApiKey;
+        $token = \abmat\publishpdf\Plugin::getInstance()->getSettings()->issuuApiKey;
         $this->client = new GuzzleHttp\Client(['headers' => ['X-ACCESS-TOKEN' => $token]]);
     }
 
@@ -27,7 +27,7 @@ class Issuu extends PublishPdfService
     {
         $signVars = $postVars;
 		ksort($signVars);
-		$doc_signature = \imhomedia\publishpdf\Plugin::getInstance()->getSettings()->issuuSecret;
+		$doc_signature = \abmat\publishpdf\Plugin::getInstance()->getSettings()->issuuSecret;
 		foreach($signVars as $key=>$value) {
 			$doc_signature .= $key.$value;
 		}
@@ -49,7 +49,7 @@ class Issuu extends PublishPdfService
     {
         $query = [
             'action' => 'issuu.documents.list',
-            'apiKey' => \imhomedia\publishpdf\Plugin::getInstance()->getSettings()->issuuApiKey,
+            'apiKey' => \abmat\publishpdf\Plugin::getInstance()->getSettings()->issuuApiKey,
             'pageSize' => 30,
             'documentSortBy' => 'publishDate',
             'resultOrder' => 'desc',
@@ -88,7 +88,7 @@ class Issuu extends PublishPdfService
     {
         $do_upload = true;
         if(!in_array($asset->getExtension(), array('pdf', 'doc', 'docx'))) {
-            return Craft::t('imhomedia-publishpdf', 'Only pdf, doc, docx files can be uploaded to issuu');
+            return Craft::t('abmat-publishpdf', 'Only pdf, doc, docx files can be uploaded to issuu');
         }
         if($this->isUploaded($asset)) {
             //TODO: check isUploaded ... issuu upload older than asset ... then upload
@@ -98,7 +98,7 @@ class Issuu extends PublishPdfService
         if($do_upload) {
             $query = [
                 'action' => 'issuu.document.upload',
-                'apiKey' => \imhomedia\publishpdf\Plugin::getInstance()->getSettings()->issuuApiKey,
+                'apiKey' => \abmat\publishpdf\Plugin::getInstance()->getSettings()->issuuApiKey,
                 'title' => $asset->filename,
                 'commentsAllowed' => 'false',
                 'downloadable' => 'false',
@@ -155,10 +155,10 @@ class Issuu extends PublishPdfService
                 $AssetRecord->publisherState = 'completed';
                 $AssetRecord->publisherId = $contents->rsp->_content->document->name;
                 $AssetRecord->publisherResponse = json_encode($contents);
-                $url = "https://issuu.com/".\imhomedia\publishpdf\Plugin::getInstance()->getSettings()->issuuUsername."/docs/".$contents->rsp->_content->document->name;
+                $url = "https://issuu.com/".\abmat\publishpdf\Plugin::getInstance()->getSettings()->issuuUsername."/docs/".$contents->rsp->_content->document->name;
                 $AssetRecord->publisherUrl = $url;
 
-                $embedUrl = 'https://issuu.com/'.\imhomedia\publishpdf\Plugin::getInstance()->getSettings()->issuuUsername.'/docs/'.$contents->rsp->_content->document->name.'?mode=window&printButtonEnabled=false';
+                $embedUrl = 'https://issuu.com/'.\abmat\publishpdf\Plugin::getInstance()->getSettings()->issuuUsername.'/docs/'.$contents->rsp->_content->document->name.'?mode=window&printButtonEnabled=false';
                 $AssetRecord->publisherEmbedUrl = $embedUrl;
                 
                 $embedCode =  '<iframe allow="clipboard-write" 
@@ -177,7 +177,7 @@ class Issuu extends PublishPdfService
                 return 'Error #1';
             }
         }
-        return Craft::t('imhomedia-publishpdf', 'Asset already uploaded to issuu');
+        return Craft::t('abmat-publishpdf', 'Asset already uploaded to issuu');
     }
 
     function deleteAsset(Asset $asset): bool|string
@@ -186,7 +186,7 @@ class Issuu extends PublishPdfService
         if($AssetRecord && $AssetRecord->publisherState == 'completed') {
             $query = [
                 'action' => 'issuu.document.delete',
-                'apiKey' => \imhomedia\publishpdf\Plugin::getInstance()->getSettings()->issuuApiKey,
+                'apiKey' => \abmat\publishpdf\Plugin::getInstance()->getSettings()->issuuApiKey,
                 'names' => $AssetRecord->publisherId,
                 'format' => 'json'
             ];
@@ -212,7 +212,7 @@ class Issuu extends PublishPdfService
                 return 'Error #1';
             }
         }
-        return Craft::t('imhomedia-publishpdf', 'Asset not present on issuu');
+        return Craft::t('abmat-publishpdf', 'Asset not present on issuu');
     }
 
     function replaceAsset(Asset $asset): bool|string
@@ -223,7 +223,7 @@ class Issuu extends PublishPdfService
 
     function isUploaded(Asset $asset): ?bool
     {
-        if(!\imhomedia\publishpdf\Plugin::getInstance()->getSettings()->issuuEnable) {
+        if(!\abmat\publishpdf\Plugin::getInstance()->getSettings()->issuuEnable) {
             return false;
         }
 
@@ -238,7 +238,7 @@ class Issuu extends PublishPdfService
 
     function getAssetRecord(Asset $asset): ?AssetRecord
     {
-        if(!\imhomedia\publishpdf\Plugin::getInstance()->getSettings()->issuuEnable) {
+        if(!\abmat\publishpdf\Plugin::getInstance()->getSettings()->issuuEnable) {
             return null;
         }
 

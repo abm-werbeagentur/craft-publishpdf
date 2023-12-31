@@ -1,10 +1,10 @@
 <?php
 /**
- * @link https://www.imhomedia.at
- * @copyright Copyright (c) Imhomedia
+ * @link https://abm.at
+ * @copyright Copyright (c) abm Feregyhazy & Simon GmbH
 */
 
-namespace imhomedia\publishpdf\records;
+namespace abmat\publishpdf\records;
 
 use craft\db\ActiveRecord;
 
@@ -15,7 +15,7 @@ use craft\db\ActiveRecord;
  */
 class AssetRecord extends ActiveRecord
 {
-	public static $tableName = '{{%imhomedia_publishpdf_asset_meta}}';
+	public static $tableName = '{{%abmat_publishpdf_asset_meta}}';
 
 	public static function tableName ()
 	{

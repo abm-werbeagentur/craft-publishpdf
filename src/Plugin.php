@@ -1,7 +1,7 @@
 <?php
 /**
- * @link https://www.imhomedia.at
- * @copyright Copyright (c) Imhomedia
+ * @link https://abm.at
+ * @copyright Copyright (c) abm Feregyhazy & Simon GmbH
 */
 
 /*
@@ -38,11 +38,11 @@ Credits to https://www.asciiart.eu/movies/star-wars
                  "-.t-._:'
 */
 
-namespace imhomedia\publishpdf;
+namespace abmat\publishpdf;
 
 use Craft;
-use imhomedia\publishpdf\services\Yumpu as YumpuService;
-use imhomedia\publishpdf\services\Issuu as IssuuService;
+use abmat\publishpdf\services\Yumpu as YumpuService;
+use abmat\publishpdf\services\Issuu as IssuuService;
 use craft\base\Model;
 use craft\base\Plugin as BasePlugin;
 use craft\elements\Asset;
@@ -57,14 +57,14 @@ use craft\events\ReplaceAssetEvent;
 use craft\services\Assets;
 use craft\services\UserPermissions;
 use craft\web\UrlManager;
-use imhomedia\publishpdf\behaviors\AssetBehavior;
-use imhomedia\publishpdf\elements\actions\IssuuUploadAction;
-use imhomedia\publishpdf\elements\actions\IssuuDeleteAction;
-use imhomedia\publishpdf\elements\actions\YumpuUploadAction;
-use imhomedia\publishpdf\elements\actions\YumpuDeleteAction;
+use abmat\publishpdf\behaviors\AssetBehavior;
+use abmat\publishpdf\elements\actions\IssuuUploadAction;
+use abmat\publishpdf\elements\actions\IssuuDeleteAction;
+use abmat\publishpdf\elements\actions\YumpuUploadAction;
+use abmat\publishpdf\elements\actions\YumpuDeleteAction;
 use yii\base\Event;
 
-use imhomedia\publishpdf\models\Settings;
+use abmat\publishpdf\models\Settings;
 
 
 /**
@@ -72,8 +72,8 @@ use imhomedia\publishpdf\models\Settings;
  *
  * @method static Plugin getInstance()
  * @method Settings getSettings()
- * @author Imhomedia <craft@imhomedia.at>
- * @copyright Imhomedia
+ * @author abm <office@abm.at>
+ * @copyright abm Feregyhazy & Simon GmbH
  * @license https://craftcms.github.io/license/ Craft License
  */
 class Plugin extends BasePlugin
@@ -130,7 +130,7 @@ class Plugin extends BasePlugin
 
     protected function settingsHtml(): ?string
     {
-        return Craft::$app->view->renderTemplate('imhomedia-publishpdf/_settings.twig', [
+        return Craft::$app->view->renderTemplate('abmat-publishpdf/_settings.twig', [
             'plugin' => $this,
             'settings' => $this->getSettings(),
         ]);
@@ -146,7 +146,7 @@ class Plugin extends BasePlugin
                 
                 if($asset->hardDelete) {
                     //remove from publisher if file is hard deleted
-                    $thisPlugin = \imhomedia\publishpdf\Plugin::getInstance();
+                    $thisPlugin = \abmat\publishpdf\Plugin::getInstance();
 
                     /* remove from issuu if setting is true and asset is uploaded to isusu */
                     if($thisPlugin->getSettings()->issuuDeleteIfAssetDeleted && $thisPlugin->issuu->isUploaded($asset)) {
@@ -165,7 +165,7 @@ class Plugin extends BasePlugin
             Assets::EVENT_AFTER_REPLACE_ASSET,
             static function (ReplaceAssetEvent $event) {
                 $asset = $event->asset;
-                $thisPlugin = \imhomedia\publishpdf\Plugin::getInstance();
+                $thisPlugin = \abmat\publishpdf\Plugin::getInstance();
 
                 if($thisPlugin->issuu->isUploaded($asset)) {
                     //asset is uploaded to issuu and should get replaced
@@ -184,10 +184,10 @@ class Plugin extends BasePlugin
     {
         Event::on(Asset::class, Asset::EVENT_REGISTER_TABLE_ATTRIBUTES, function (RegisterElementTableAttributesEvent $event) {
             $event->tableAttributes['yumpu'] = [
-                'label' => Craft::t('imhomedia-publishpdf', 'Yumpu'),
+                'label' => Craft::t('abmat-publishpdf', 'Yumpu'),
             ];
             $event->tableAttributes['issuu'] = [
-                'label' => Craft::t('imhomedia-publishpdf', 'Issuu'),
+                'label' => Craft::t('abmat-publishpdf', 'Issuu'),
             ];
         });
 
@@ -232,13 +232,13 @@ class Plugin extends BasePlugin
         Event::on(UserPermissions::class, UserPermissions::EVENT_REGISTER_PERMISSIONS, function(RegisterUserPermissionsEvent $event): void {
 
             $permissions = [
-                'imhomedia-publishpdf-settings' => ['label' => Craft::t('app', 'Settings')],
-                'imhomedia-publishpdf-yumpu-upload' => ['label' => Craft::t('app', 'Can upload an asset to Yumpu')],
-                'imhomedia-publishpdf-issuu-upload' => ['label' => Craft::t('app', 'Can upload an asset to Issuu')],
+                'abmat-publishpdf-settings' => ['label' => Craft::t('app', 'Settings')],
+                'abmat-publishpdf-yumpu-upload' => ['label' => Craft::t('app', 'Can upload an asset to Yumpu')],
+                'abmat-publishpdf-issuu-upload' => ['label' => Craft::t('app', 'Can upload an asset to Issuu')],
             ];
 
             $event->permissions[] = [
-                'heading' => Craft::t('imhomedia-publishpdf', 'Publish PDF'),
+                'heading' => Craft::t('abmat-publishpdf', 'Publish PDF'),
                 'permissions' => $permissions,
             ];
         });
@@ -248,9 +248,9 @@ class Plugin extends BasePlugin
 	{
         Event::on(UrlManager::class, UrlManager::EVENT_REGISTER_CP_URL_RULES, function(RegisterUrlRulesEvent $event): void {
             
-            $event->rules['imhomedia-publishpdf'] = 'imhomedia-publishpdf/overview/index';
-            $event->rules['imhomedia-publishpdf/yumpu'] = 'imhomedia-publishpdf/yumpu/index';
-            $event->rules['imhomedia-publishpdf/issuu'] = 'imhomedia-publishpdf/issuu/index';
+            $event->rules['abmat-publishpdf'] = 'abmat-publishpdf/overview/index';
+            $event->rules['abmat-publishpdf/yumpu'] = 'abmat-publishpdf/yumpu/index';
+            $event->rules['abmat-publishpdf/issuu'] = 'abmat-publishpdf/issuu/index';
         });
 	}
 
@@ -271,24 +271,24 @@ class Plugin extends BasePlugin
 		$currentUser = Craft::$app->user;
 
 		// $subNav = [
-		// 	'imhomedia-publishpdf-dashboard' => ['label' => 'Dashboard', 'url' => 'imhomedia-publishpdf'],
+		// 	'abmat-publishpdf-dashboard' => ['label' => 'Dashboard', 'url' => 'abmat-publishpdf'],
 		// ];
         
         if($this->settings->issuuEnable) {
-            $subNav['imhomedia-publishpdf-issuu'] = [
-                'label' => Craft::t('imhomedia-publishpdf', 'Issuu'),
-                'url' => 'imhomedia-publishpdf/issuu'
+            $subNav['abmat-publishpdf-issuu'] = [
+                'label' => Craft::t('abmat-publishpdf', 'Issuu'),
+                'url' => 'abmat-publishpdf/issuu'
             ];
         }
 
         if($this->settings->yumpuEnable) {
-            $subNav['imhomedia-publishpdf-yumpu'] = [
-                'label' => Craft::t('imhomedia-publishpdf', 'Yumpu'),
-                'url' => 'imhomedia-publishpdf/yumpu',
+            $subNav['abmat-publishpdf-yumpu'] = [
+                'label' => Craft::t('abmat-publishpdf', 'Yumpu'),
+                'url' => 'abmat-publishpdf/yumpu',
             ];
         }
 
-        $subNav['imhomedia-publishpdf-settings'] = ['label' => 'Settings', 'url' => 'settings/plugins/imhomedia-publishpdf'];
+        $subNav['abmat-publishpdf-settings'] = ['label' => 'Settings', 'url' => 'settings/plugins/abmat-publishpdf'];
 
 		$item['subnav'] = $subNav;
 

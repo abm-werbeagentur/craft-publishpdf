@@ -1,6 +1,6 @@
 <?php
 
-namespace imhomedia\publishpdf\elements\actions;
+namespace abmat\publishpdf\elements\actions;
 
 use Craft;
 use craft\base\ElementAction;
@@ -14,7 +14,7 @@ class IssuuUploadAction extends ElementAction
 
     public static function displayName(): string
     {
-        return Craft::t('imhomedia-publishpdf', 'Upload to Issuu');
+        return Craft::t('abmat-publishpdf', 'Upload to Issuu');
     }
 
     public function getMessage(): ?string
@@ -33,7 +33,7 @@ class IssuuUploadAction extends ElementAction
 
     function upload(Asset $asset): void
     {
-        $return = \imhomedia\publishpdf\Plugin::getInstance()->issuu->uploadAsset($asset);
+        $return = \abmat\publishpdf\Plugin::getInstance()->issuu->uploadAsset($asset);
 
         if($return === true) {
             $this->message .= 'Asset '.$asset->filename.' upload in progress';

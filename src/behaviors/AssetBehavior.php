@@ -1,11 +1,11 @@
 <?php
 
-namespace imhomedia\publishpdf\behaviors;
+namespace abmat\publishpdf\behaviors;
 
 use Craft;
 use yii\base\Behavior;
 use craft\elements\Asset;
-use imhomedia\publishpdf\records\AssetRecord;
+use abmat\publishpdf\records\AssetRecord;
 
 class AssetBehavior extends Behavior
 {
@@ -15,7 +15,7 @@ class AssetBehavior extends Behavior
     private function _issuuGetRecord(Asset $asset): ?AssetRecord
     {
         if($this->issuuAssetRecord == null) {
-            $AssetRecord = \imhomedia\publishpdf\Plugin::getInstance()->issuu->getAssetRecord($asset);
+            $AssetRecord = \abmat\publishpdf\Plugin::getInstance()->issuu->getAssetRecord($asset);
             $this->issuuAssetRecord = $AssetRecord;
         }
         return $this->issuuAssetRecord;
@@ -23,7 +23,7 @@ class AssetBehavior extends Behavior
 
     public function issuuIsUploaded(): bool
     {
-        //return \imhomedia\publishpdf\Plugin::getInstance()->issuu->isUploaded($this->owner);
+        //return \abmat\publishpdf\Plugin::getInstance()->issuu->isUploaded($this->owner);
         if($AssetRecord = $this->_issuuGetRecord($this->owner)) {
             return true;
         }
@@ -67,7 +67,7 @@ class AssetBehavior extends Behavior
     private function _yumpuGetRecord(Asset $asset): ?AssetRecord
     {
         if($this->yumpuAssetRecord == null) {
-            $AssetRecord = \imhomedia\publishpdf\Plugin::getInstance()->yumpu->getAssetRecord($asset);
+            $AssetRecord = \abmat\publishpdf\Plugin::getInstance()->yumpu->getAssetRecord($asset);
             $this->yumpuAssetRecord = $AssetRecord;
         }
         
@@ -75,7 +75,7 @@ class AssetBehavior extends Behavior
     }
     public function yumpuIsUploaded(): bool
     {
-        // return \imhomedia\publishpdf\Plugin::getInstance()->yumpu->isUploaded($this->owner);
+        // return \abmat\publishpdf\Plugin::getInstance()->yumpu->isUploaded($this->owner);
         if($AssetRecord = $this->_yumpuGetRecord($this->owner)) {
             return true;
         }

@@ -1,6 +1,6 @@
 <?php
 
-namespace imhomedia\publishpdf\elements\actions;
+namespace abmat\publishpdf\elements\actions;
 
 use Craft;
 use craft\base\ElementAction;
@@ -13,7 +13,7 @@ class YumpuUploadAction extends ElementAction
 
     public static function displayName(): string
     {
-        return Craft::t('imhomedia-publishpdf', 'Upload to Yumpu');
+        return Craft::t('abmat-publishpdf', 'Upload to Yumpu');
     }
 
     public function getMessage(): ?string
@@ -32,7 +32,7 @@ class YumpuUploadAction extends ElementAction
 
     function upload(Asset $asset): void
     {
-        $return = \imhomedia\publishpdf\Plugin::getInstance()->yumpu->uploadAsset($asset);
+        $return = \abmat\publishpdf\Plugin::getInstance()->yumpu->uploadAsset($asset);
         //Craft::info($return, 'publishpdfdebug');
         if($return === true) {
             $this->message .= 'Asset '.$asset->filename.' upload in progress';
