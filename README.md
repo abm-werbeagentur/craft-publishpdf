@@ -23,7 +23,7 @@ Open your terminal and run the following commands:
 cd /path/to/my-project.test
 
 # tell Composer to load the plugin
-composer require imhomedia/craft-publishpdf
+composer require abmat/craft-publishpdf
 
 # tell Craft to install the plugin
 ./craft plugin/install craft-publishpdf
