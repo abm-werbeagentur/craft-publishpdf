@@ -26,5 +26,6 @@ cd /path/to/my-project.test
 composer require abmat/craft-publishpdf
 
 # tell Craft to install the plugin
-./craft plugin/install craft-publishpdf
+./craft plugin/install abm-publishpdf
 ```
+ 
