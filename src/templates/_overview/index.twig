@@ -1,13 +1,93 @@
 {% extends "_layouts/cp" %}
 {% set selectedSubnavItem = 'abmat-publishpdf-dashboard' %}
-{% set title = 'Publish PDF - Overview' %}
+{% set title = 'Publish PDF files on Issuu and Yumpuu' %}
 
 {% block content %}
-    Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
-    <br /><br />
-    Some information on the plugin ...
-    <ul>
-        <li>How to: settings</li>
-        <li>How to: twig</li>
-    </ul>
+    <h2>Settings</h2>
+    <p>You can enable enable Issuu and Yumpu on the <a href="settings/plugins/abm-publishpdf">Settings</a> page.</p>
+    <p>
+        You need to create an Issuu API key in your Issuu account settings on <a href="https://issuu.com/home/settings/apikey" target="_blank">https://issuu.com</a> and insert the information on the plugin settings page.
+    </p>
+    <p>
+        You need to create a Yumpu API key in your Yumpu account settings on <a href="https://www.yumpu.com/de/account/profile/edit#yp-api" target="_blank">https://www.yumpu.com</a> and insert the information on the plugin settings page.
+    </p>
+    <br />
+
+    <h2>Twig</h2>
+    <div>
+        <p>This plugins extends assets with the following methods:</p>
+        <ul>
+            <li>
+                <p>
+                <pre><strong>asset.issuuIsUploaded() : bool</strong></pre>
+                Check if the asset is uploaded to Issuu
+                </p>
+            </li>
+
+            <li>
+                <p>
+                <pre><strong>asset.issuuGetId() : ?string</strong></pre>
+                Returns the Issuu ID if asset is uploaded or null
+                </p>
+            </li>
+
+            <li>
+                <p>
+                <pre><strong>asset.issuuGetLink() : ?string</strong></pre>
+                Returns the Issuu Publisher URL if asset is uploaded or null
+                </p>
+            </li>
+
+            <li>
+                <p>
+                <pre><strong>asset.issuuGetEmbedUrl() : ?string</strong></pre>
+                Returns the Issuu Embed URL if asset is uploaded or null
+                </p>
+            </li>
+
+            <li>
+                <p>
+                <pre><strong>asset.issuuGetEmbedCode() : ?string</strong></pre>
+                Returns the Issuu Embed Code if asset is uploaded or null. Should be used with |raw function to display the Issuu iframe correctly
+                </p>
+            </li>
+        </ul>
+        <br />
+        <ul>
+            <li>
+                <p>
+                <pre><strong>asset.yumpuIsUploaded() : bool</strong></pre>
+                Check if the asset is uploaded to Yumpu
+                </p>
+            </li>
+
+            <li>
+                <p>
+                <pre><strong>asset.yumpuGetId() : ?string</strong></pre>
+                Returns the Yumpu ID if asset is uploaded or null
+                </p>
+            </li>
+
+            <li>
+                <p>
+                <pre><strong>asset.yumpuGetLink() : ?string</strong></pre>
+                Returns the Yumpu Publisher URL if asset is uploaded or null
+                </p>
+            </li>
+
+            <li>
+                <p>
+                <pre><strong>asset.yumpuGetEmbedUrl() : ?string</strong></pre>
+                Returns the Yumpu Embed URL if asset is uploaded or null
+                </p>
+            </li>
+
+            <li>
+                <p>
+                <pre><strong>asset.yumpuGetEmbedCode() : ?string</strong></pre>
+                Returns the Yumpu Embed Code if asset is uploaded or null. Should be used with |raw function to display the Yumpu iframe correctly
+                </p>
+            </li>
+        </ul>
+    </div>
 {% endblock %}
