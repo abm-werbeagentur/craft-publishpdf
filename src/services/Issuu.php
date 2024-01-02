@@ -88,7 +88,7 @@ class Issuu extends PublishPdfService
     {
         $do_upload = true;
         if(!in_array($asset->getExtension(), array('pdf', 'doc', 'docx'))) {
-            return Craft::t('abmat-publishpdf', 'Only pdf, doc, docx files can be uploaded to issuu');
+            return Craft::t('abm-publishpdf', 'Only pdf, doc, docx files can be uploaded to issuu');
         }
         if($this->isUploaded($asset)) {
             //TODO: check isUploaded ... issuu upload older than asset ... then upload
@@ -177,7 +177,7 @@ class Issuu extends PublishPdfService
                 return 'Error #1';
             }
         }
-        return Craft::t('abmat-publishpdf', 'Asset already uploaded to issuu');
+        return Craft::t('abm-publishpdf', 'Asset already uploaded to issuu');
     }
 
     function deleteAsset(Asset $asset): bool|string
@@ -212,7 +212,7 @@ class Issuu extends PublishPdfService
                 return 'Error #1';
             }
         }
-        return Craft::t('abmat-publishpdf', 'Asset not present on issuu');
+        return Craft::t('abm-publishpdf', 'Asset not present on issuu');
     }
 
     function replaceAsset(Asset $asset): bool|string

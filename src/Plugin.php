@@ -130,7 +130,7 @@ class Plugin extends BasePlugin
 
     protected function settingsHtml(): ?string
     {
-        return Craft::$app->view->renderTemplate('abmat-publishpdf/_settings.twig', [
+        return Craft::$app->view->renderTemplate('abm-publishpdf/_settings.twig', [
             'plugin' => $this,
             'settings' => $this->getSettings(),
         ]);
@@ -184,10 +184,10 @@ class Plugin extends BasePlugin
     {
         Event::on(Asset::class, Asset::EVENT_REGISTER_TABLE_ATTRIBUTES, function (RegisterElementTableAttributesEvent $event) {
             $event->tableAttributes['yumpu'] = [
-                'label' => Craft::t('abmat-publishpdf', 'Yumpu'),
+                'label' => Craft::t('abm-publishpdf', 'Yumpu'),
             ];
             $event->tableAttributes['issuu'] = [
-                'label' => Craft::t('abmat-publishpdf', 'Issuu'),
+                'label' => Craft::t('abm-publishpdf', 'Issuu'),
             ];
         });
 
@@ -233,12 +233,12 @@ class Plugin extends BasePlugin
 
             $permissions = [
                 'abmat-publishpdf-settings' => ['label' => Craft::t('app', 'Settings')],
-                'abmat-publishpdf-yumpu-upload' => ['label' => Craft::t('app', 'Can upload an asset to Yumpu')],
-                'abmat-publishpdf-issuu-upload' => ['label' => Craft::t('app', 'Can upload an asset to Issuu')],
+                'abmat-publishpdf-yumpu-upload' => ['label' => Craft::t('abm-publishpdf', 'Can upload an asset to Yumpu')],
+                'abmat-publishpdf-issuu-upload' => ['label' => Craft::t('abm-publishpdf', 'Can upload an asset to Issuu')],
             ];
 
             $event->permissions[] = [
-                'heading' => Craft::t('abmat-publishpdf', 'Publish PDF'),
+                'heading' => Craft::t('abm-publishpdf', 'Publish PDF'),
                 'permissions' => $permissions,
             ];
         });
@@ -248,9 +248,9 @@ class Plugin extends BasePlugin
 	{
         Event::on(UrlManager::class, UrlManager::EVENT_REGISTER_CP_URL_RULES, function(RegisterUrlRulesEvent $event): void {
             
-            $event->rules['abmat-publishpdf'] = 'abmat-publishpdf/overview/index';
-            $event->rules['abmat-publishpdf/yumpu'] = 'abmat-publishpdf/yumpu/index';
-            $event->rules['abmat-publishpdf/issuu'] = 'abmat-publishpdf/issuu/index';
+            $event->rules['abm-publishpdf'] = 'abm-publishpdf/overview/index';
+            $event->rules['abm-publishpdf/yumpu'] = 'abm-publishpdf/yumpu/index';
+            $event->rules['abm-publishpdf/issuu'] = 'abm-publishpdf/issuu/index';
         });
 	}
 
@@ -271,24 +271,24 @@ class Plugin extends BasePlugin
 		$currentUser = Craft::$app->user;
 
 		// $subNav = [
-		// 	'abmat-publishpdf-dashboard' => ['label' => 'Dashboard', 'url' => 'abmat-publishpdf'],
+		// 	'abmat-publishpdf-dashboard' => ['label' => 'Dashboard', 'url' => 'abm-publishpdf'],
 		// ];
         
         if($this->settings->issuuEnable) {
             $subNav['abmat-publishpdf-issuu'] = [
-                'label' => Craft::t('abmat-publishpdf', 'Issuu'),
-                'url' => 'abmat-publishpdf/issuu'
+                'label' => Craft::t('abm-publishpdf', 'Issuu'),
+                'url' => 'abm-publishpdf/issuu'
             ];
         }
 
         if($this->settings->yumpuEnable) {
             $subNav['abmat-publishpdf-yumpu'] = [
-                'label' => Craft::t('abmat-publishpdf', 'Yumpu'),
-                'url' => 'abmat-publishpdf/yumpu',
+                'label' => Craft::t('abm-publishpdf', 'Yumpu'),
+                'url' => 'abm-publishpdf/yumpu',
             ];
         }
 
-        $subNav['abmat-publishpdf-settings'] = ['label' => 'Settings', 'url' => 'settings/plugins/abmat-publishpdf'];
+        $subNav['abmat-publishpdf-settings'] = ['label' => 'Settings', 'url' => 'settings/plugins/abm-publishpdf'];
 
 		$item['subnav'] = $subNav;
 

@@ -15,12 +15,12 @@ class YumpuController extends Controller {
 	{
         $token = \abmat\publishpdf\Plugin::getInstance()->getSettings()->yumpuApiToken;
         if(!$token) {
-            return $this->renderTemplate('abmat-publishpdf/_yumpu/error_token');
+            return $this->renderTemplate('abm-publishpdf/_yumpu/error_token');
         } else {
             $yumpuService = new Yumpu();
             $categories = $yumpuService->getCategories();
             $documents = $yumpuService->getDocuments();
-            return $this->renderTemplate('abmat-publishpdf/_yumpu/index', ['categories' => $categories, 'documents' => $documents]);
+            return $this->renderTemplate('abm-publishpdf/_yumpu/index', ['categories' => $categories, 'documents' => $documents]);
         }
 	}
 }

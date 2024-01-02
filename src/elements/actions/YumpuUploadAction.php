@@ -13,7 +13,7 @@ class YumpuUploadAction extends ElementAction
 
     public static function displayName(): string
     {
-        return Craft::t('abmat-publishpdf', 'Upload to Yumpu');
+        return Craft::t('abm-publishpdf', 'Upload to Yumpu');
     }
 
     public function getMessage(): ?string

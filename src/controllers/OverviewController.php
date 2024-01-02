@@ -13,6 +13,6 @@ class OverviewController extends Controller {
 	
 	public function actionIndex ()
 	{
-		return $this->renderTemplate('abmat-publishpdf/_overview/index', []);
+		return $this->renderTemplate('abm-publishpdf/_overview/index', []);
 	}
 }

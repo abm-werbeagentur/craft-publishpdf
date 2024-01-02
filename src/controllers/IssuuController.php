@@ -15,14 +15,14 @@ class IssuuController extends Controller {
 	{
 		$issuuSecret = \abmat\publishpdf\Plugin::getInstance()->getSettings()->issuuSecret;
         if(!$issuuSecret) {
-            return $this->renderTemplate('abmat-publishpdf/_issuu/error_token');
+            return $this->renderTemplate('abm-publishpdf/_issuu/error_token');
         } else {
             $issuuService = new Issuu();
             $RET = $issuuService->getDocuments();
             if($RET['error'] === true) {
-                return $this->renderTemplate('abmat-publishpdf/_issuu/error', ['msg' => $RET['msg']]);
+                return $this->renderTemplate('abm-publishpdf/_issuu/error', ['msg' => $RET['msg']]);
             } else {
-                return $this->renderTemplate('abmat-publishpdf/_issuu/index', ['documents' => $RET['documents']]);
+                return $this->renderTemplate('abm-publishpdf/_issuu/index', ['documents' => $RET['documents']]);
             }
         }
 	}

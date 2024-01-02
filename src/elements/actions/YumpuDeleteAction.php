@@ -13,7 +13,7 @@ class YumpuDeleteAction extends ElementAction
 
     public static function displayName(): string
     {
-        return Craft::t('abmat-publishpdf', 'Delete from Yumpu');
+        return Craft::t('abm-publishpdf', 'Delete from Yumpu');
     }
 
     public function getMessage(): ?string
@@ -23,7 +23,7 @@ class YumpuDeleteAction extends ElementAction
 
     public function getConfirmationMessage(): ?string
     {
-        return Craft::t('abmat-publishpdf', 'Really delete from Yumpu?');
+        return Craft::t('abm-publishpdf', 'Really delete from Yumpu?');
     }
 
     public function performAction(ElementQueryInterface $query): bool

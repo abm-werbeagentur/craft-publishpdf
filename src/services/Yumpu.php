@@ -82,7 +82,7 @@ class Yumpu extends PublishPdfService
     {
         $do_upload = true;
         if($asset->getExtension() !== 'pdf') {
-            return Craft::t('abmat-publishpdf', 'Only pdf files can be uploaded to yumpu');
+            return Craft::t('abm-publishpdf', 'Only pdf files can be uploaded to yumpu');
         }
         if($this->isUploaded($asset)) {
             //TODO: check isUploaded ... yumpu upload older than asset ... then upload
@@ -113,8 +113,7 @@ class Yumpu extends PublishPdfService
             $contents = json_decode($stream->getContents());
 
             if($contents->state == 'success') {
-                // Craft::info($contents->progress_id, 'publishpdfdebug');
-                // Craft::info(json_encode($contents), 'publishpdfdebug');
+                //Craft::info($contents, 'publishpdf');
                 $AssetRecord = new AssetRecord();
                 $AssetRecord->assetId = $asset->id;
                 $AssetRecord->publisherHandle = self::$handle;
@@ -125,7 +124,7 @@ class Yumpu extends PublishPdfService
                 return true;
             }
         }
-        return Craft::t('abmat-publishpdf', 'Asset already uploaded to yumpu');
+        return Craft::t('abm-publishpdf', 'Asset already uploaded to yumpu');
     }
 
     function deleteAsset(Asset $asset): bool|string
@@ -144,7 +143,7 @@ class Yumpu extends PublishPdfService
             $AssetRecord->delete();
             return true;
         }
-        return Craft::t('abmat-publishpdf', 'Asset not present on yumpu');
+        return Craft::t('abm-publishpdf', 'Asset not present on yumpu');
     }
 
     function replaceAsset(Asset $asset): bool|string

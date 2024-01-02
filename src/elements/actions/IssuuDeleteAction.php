@@ -14,7 +14,7 @@ class IssuuDeleteAction extends ElementAction
 
     public static function displayName(): string
     {
-        return Craft::t('abmat-publishpdf', 'Delete from Issuu');
+        return Craft::t('abm-publishpdf', 'Delete from Issuu');
     }
 
     public function getMessage(): ?string
@@ -24,7 +24,7 @@ class IssuuDeleteAction extends ElementAction
 
     public function getConfirmationMessage(): ?string
     {
-        return Craft::t('abmat-publishpdf', 'Really delete from Issuu?');
+        return Craft::t('abm-publishpdf', 'Really delete from Issuu?');
     }
 
     public function performAction(ElementQueryInterface $query): bool

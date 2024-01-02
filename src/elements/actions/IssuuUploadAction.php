@@ -14,7 +14,7 @@ class IssuuUploadAction extends ElementAction
 
     public static function displayName(): string
     {
-        return Craft::t('abmat-publishpdf', 'Upload to Issuu');
+        return Craft::t('abm-publishpdf', 'Upload to Issuu');
     }
 
     public function getMessage(): ?string

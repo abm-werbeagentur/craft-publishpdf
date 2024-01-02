@@ -30,7 +30,7 @@
         }
     },
     "extra": {
-        "handle": "abmat-publishpdf",
+        "handle": "abm-publishpdf",
         "name": "Publish PDF files",
         "developer": "ABM Feregyhazy & Simon GmbH",
         "documentationUrl": "https://github.com/abm-werbeagentur/craft-publishpdf"

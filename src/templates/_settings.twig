@@ -10,7 +10,7 @@
     first: false,
     id: 'issuuEnable',
     name: 'issuuEnable',
-    label: 'Enable Issuu' | t('abmat-publishpdf'),
+    label: 'Enable Issuu' | t('abm-publishpdf'),
     on: settings.issuuEnable
 }) }}
 
@@ -37,19 +37,20 @@
     first: false,
     id: 'issuuDeleteIfAssetDeleted',
     name: 'issuuDeleteIfAssetDeleted',
-    label: 'Delete from Issuu if asset is (hard) deleted' | t('abmat-publishpdf'),
+    label: 'Delete from Issuu if asset is (hard) deleted' | t('abm-publishpdf'),
     on: settings.issuuDeleteIfAssetDeleted
 }) }}
 
 <hr />
 
 <h2>Yumpu Settings</h2>
+<p>{{ 'Please make sure you are using at least a Pro (adFree) account. Otherwise the API interface will not work'|t }}</p><br />
 
 {{ forms.lightswitchField({
     first: false,
     id: 'yumpuEnable',
     name: 'yumpuEnable',
-    label: 'Enable Yumpu' | t('abmat-publishpdf'),
+    label: 'Enable Yumpu' | t('abm-publishpdf'),
     on: settings.yumpuEnable
 }) }}
 
@@ -63,7 +64,7 @@
     first: false,
     id: 'yumpuDeleteIfAssetDeleted',
     name: 'yumpuDeleteIfAssetDeleted',
-    label: 'Delete from Yumpu if asset is (hard) deleted' | t('abmat-publishpdf'),
+    label: 'Delete from Yumpu if asset is (hard) deleted' | t('abm-publishpdf'),
     on: settings.yumpuDeleteIfAssetDeleted
 }) }}
 

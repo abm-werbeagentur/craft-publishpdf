@@ -28,7 +28,7 @@ class PublishPdfService extends Component
         if(isset($contents->error)) {
             return $response->getStatusCode() . " - " . $contents->error;
         }
-        return Craft::t('abmat-publishpdf', 'Error');
+        return Craft::t('abm-publishpdf', 'Error');
     }
 
     /**
@@ -38,19 +38,19 @@ class PublishPdfService extends Component
     {
         $AssetRecord = $this->getAssetRecord($asset);
         if($AssetRecord == null) {
-            return $this->formatResults(Craft::t('abmat-publishpdf', '-'));
+            return $this->formatResults(Craft::t('abm-publishpdf', '-'));
         } else if($AssetRecord->publisherState == 'progress') {
             if($this->checkAssetProgress($AssetRecord)) {
                 //Todo: get new AssetRecord or not?
                 //$AssetRecord = $this->getAssetRecord($asset);
                 return '<a href="'.$AssetRecord->publisherUrl.'" title="Visit publisher url" rel="noopener" target="_blank" data-icon="world" aria-label="View"></a>';
             } else {
-                return $this->formatResults(Craft::t('abmat-publishpdf', 'processing'));
+                return $this->formatResults(Craft::t('abm-publishpdf', 'processing'));
             }
         } else if($AssetRecord->publisherState == 'completed') {
             return '<a href="'.$AssetRecord->publisherUrl.'" title="Visit publisher url" rel="noopener" target="_blank" data-icon="world" aria-label="View"></a>';
         }
-        return $this->formatResults(Craft::t('abmat-publishpdf', '-'));
+        return $this->formatResults(Craft::t('abm-publishpdf', '-'));
     }
 
     /**
