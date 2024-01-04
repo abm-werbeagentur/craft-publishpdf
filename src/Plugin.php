@@ -106,7 +106,7 @@ class Plugin extends BasePlugin
         ]);
 
         // Defer most setup tasks until Craft is fully initialized
-        Craft::$app->onInit(function() {
+        //Craft::$app->onInit(function() {
 
             if (Craft::$app->getRequest()->getIsCpRequest()) {
                 if (Craft::$app->getEdition() === Craft::Pro) {
@@ -120,7 +120,7 @@ class Plugin extends BasePlugin
             }
 
             $this->_attachBehaviors();
-        });
+        //});
     }
 
     protected function createSettingsModel(): ?Model
