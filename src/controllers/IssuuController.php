@@ -13,8 +13,8 @@ class IssuuController extends Controller {
 	
 	public function actionIndex ()
 	{
-		$issuuSecret = \abmat\publishpdf\Plugin::getInstance()->getSettings()->issuuSecret;
-        if(!$issuuSecret) {
+		$issuuClientSecret = \abmat\publishpdf\Plugin::getInstance()->getSettings()->issuuClientSecret;
+        if(!$issuuClientSecret) {
             return $this->renderTemplate('abm-publishpdf/_issuu/error_token');
         } else {
             $issuuService = new Issuu();

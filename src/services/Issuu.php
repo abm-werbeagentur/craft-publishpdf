@@ -17,24 +17,45 @@ class Issuu extends PublishPdfService
 {
     public $client = false;
     public static $handle = 'issuu';
+    protected $client_id = "";
+    protected $client_secret = "";
+    protected $access_token = "";
+    protected $httpClient = null;
+    private $token_url = "https://oauth.issuu.com/oauth2/token";
 
     function __construct() {
-        $token = \abmat\publishpdf\Plugin::getInstance()->getSettings()->issuuApiKey;
-        $this->client = new GuzzleHttp\Client(['headers' => ['X-ACCESS-TOKEN' => $token]]);
+        $this->client_id = \abmat\publishpdf\Plugin::getInstance()->getSettings()->issuuClientId;
+        $this->client_secret = \abmat\publishpdf\Plugin::getInstance()->getSettings()->issuuClientSecret;
+
+        $this->httpClient = new GuzzleHttp\Client();
+
+        $this->grantCredentials();
     }
 
-    private function _signRequest(array $postVars): array
-    {
-        $signVars = $postVars;
-		ksort($signVars);
-		$doc_signature = \abmat\publishpdf\Plugin::getInstance()->getSettings()->issuuSecret;
-		foreach($signVars as $key=>$value) {
-			$doc_signature .= $key.$value;
+    private function grantCredentials() {
+		$response = $this->httpClient->post(
+			$this->token_url,
+			[
+				'form_params' => [
+					'grant_type' => 'client_credentials',
+					'client_id' => $this->client_id,
+					'client_secret' => $this->client_secret,
+					'scope' => 'document:read document:write',
+				]
+			]
+		);
+
+		if($response->getStatusCode()==200) {
+			$body = json_decode($response->getBody()->getContents());
+			if(isset($body->access_token)) {
+				$this->access_token = $body->access_token;
+			}
 		}
-		
-		$postVars['signature'] = md5($doc_signature);
-        return $postVars;
-    }
+
+		if(!$this->access_token) {
+			throw new \Exception("failed auth with client_credentials");
+		}
+	}
 
     private function _checkResponseError($contents): bool|string
     {
@@ -47,42 +68,88 @@ class Issuu extends PublishPdfService
 
     function getDocuments()
     {
-        $query = [
-            'action' => 'issuu.documents.list',
-            'apiKey' => \abmat\publishpdf\Plugin::getInstance()->getSettings()->issuuApiKey,
-            'pageSize' => 30,
-            'documentSortBy' => 'publishDate',
-            'resultOrder' => 'desc',
-            'access' => 'public',
-            'format' => 'json'
-        ];
-        $query = $this->_signRequest($query);
         try {
-            $response = $this->client->request('GET', 'https://api.issuu.com/1_0', [
-                'query' => $query
-            ]);
-        } catch (\Exception $e) {
-            return null;
-        }
-        $stream = $response->getBody();
-        $contents = json_decode($stream->getContents());
-        $error = $this->_checkResponseError($contents);
-        if($error !== false) {
+
+			$response = $this->httpClient->get(
+				"https://api.issuu.com/v2/publications",
+				[
+					'headers' => [
+						'Authorization' => 'Bearer '.$this->access_token,
+					],
+					'query' => [
+                        'size' => 50,
+                        'state' => 'PUBLISHED'
+                    ]
+				]
+			);
+		} catch(GuzzleHttp\Exception\ClientException $e) {
+			return array(
+                'error' => true,
+                'msg' => $e->getMessage()
+            );
+		
+		} catch(GuzzleHttp\Exception\ServerException $e) {
             return array(
                 'error' => true,
-                'msg' => $error
+                'msg' => $e->getMessage()
             );
-        }
-        
-        // Craft::info($contents, 'publishpdfdebug');
-        if($contents && isset($contents->rsp)) {
+		}
+
+		if($response->getStatusCode()==200) {
+			$body = json_decode($response->getBody()->getContents());
             return array(
                 'error' => false,
-                'documents' => $contents->rsp
+                'documents' => $body
             );
-        }
-        return array('error' => true, 'msg'=>'No documents found');
+		}
+
+		return array(
+            'error' => true,
+            'msg' => $response->getStatusCode()
+        );
     }
+
+    public function publishDraft($slug) {
+		try {
+			$response = $this->httpClient->post(
+				"https://api.issuu.com/v2/drafts/".$slug."/publish",
+				[
+					'headers' => [
+						'Authorization' => 'Bearer '.$this->access_token,
+					],
+					'json' => [
+						'desiredName' => $slug,
+					],
+				]
+			);
+		} catch(GuzzleHttp\Exception\ClientException $e) {
+            if($e->getCode() == 404) {
+                //delete entry
+                $AssetRecord = AssetRecord::find()->where([
+                    "publisherHandle" => self::$handle,
+                    "publisherId" => $slug,
+                ])->one();
+                if($AssetRecord) {
+                    $AssetRecord->delete();
+                }
+            }
+			//throw new \Exception($e->getMessage());
+            return false;
+
+		} catch(GuzzleHttp\Exception\ServerException $e) {
+			//throw new \Exception($e->getMessage());
+            return false;
+		}
+
+		if($response->getStatusCode()==200) {
+			$body = json_decode($response->getBody()->getContents());
+			if(isset($body->publicLocation) && $body->publicLocation!="") {
+				return $body;
+			}
+		}
+
+		return false;
+	}
 
     function uploadAsset(Asset $asset): bool|string
     {
@@ -96,121 +163,120 @@ class Issuu extends PublishPdfService
         }
 
         if($do_upload) {
-            $query = [
-                'action' => 'issuu.document.upload',
-                'apiKey' => \abmat\publishpdf\Plugin::getInstance()->getSettings()->issuuApiKey,
-                'title' => $asset->filename,
-                'commentsAllowed' => 'false',
-                'downloadable' => 'false',
-                'access' => 'public',
-                'ratingsAllowed' => 'false',
-                'format' => 'json'
-            ];
-            $query = $this->_signRequest($query);
+            $pdf_title = str_replace("  "," ",preg_replace("/[^a-zA-Z0-9_.\-\s]/","",trim($asset->filename)));
 
             try {
-                $multipart = array();
-                $multipart[] = array(
-                    'name' => 'file',
-                    'contents' => $asset->getContents(),
-                    'filename' => $asset->filename
+                $response = $this->httpClient->post(
+                    "https://api.issuu.com/v2/drafts",
+                    [
+                        'headers' => [
+                            'Authorization' => 'Bearer '.$this->access_token,
+                        ],
+                        'json' => [
+                            'confirmCopyright' => true,
+                            //'fileUrl' => $asset->getDataUrl(),
+                            'info' => [
+                                'file' => 0,
+                                'access' => 'PUBLIC',
+                                'title' => $pdf_title,
+                                'description' => "",
+                                'preview' => false,
+                                'type' => 'promotional',
+                                'showDetectedLinks' => false,
+                                'downloadable' => true,
+                                'originalPublishDate' => null
+                            ]
+                        ],
+                    ]
                 );
-                foreach($query as $key => $value) {
+    
+            } catch(GuzzleHttp\Exception\ClientException $e) {
+                throw new \Exception("Client failed uploading asset to Issuu: " . $e->getMessage());
+    
+            } catch(GuzzleHttp\Exception\ServerException $e) {
+                throw new \Exception("Server failed uploading asset to Issuu: " . $e->getMessage());
+            }
+            
+            $slug = "";
+            if($response->getStatusCode()==200) {
+                $body = json_decode($response->getBody()->getContents());
+                if(isset($body->slug) && $body->slug!="") {
+                    $slug = $body->slug;
+                }
+            }
+    
+            if($slug) {
+                try {
+                    $multipart = array();
                     $multipart[] = array(
-                        'name' => $key,
-                        'contents' => $value
+                        'name' => 'file',
+                        'contents' => $asset->getContents(),
+                        'filename' => $asset->filename
                     );
+                    // Craft::info('multipart', 'publishpdfdebug');
+                    // Craft::info(json_encode($multipart), 'publishpdfdebug');
+                    
+                    $response = $this->httpClient->PATCH(
+                        'https://api.issuu.com/v2/drafts/'.$slug.'/upload',
+                        [
+                            'headers' => [
+                                'Authorization' => 'Bearer '.$this->access_token,
+                            ],
+                            'multipart' => $multipart
+                        ]
+                    );
+                } catch(\Exception $e) {
+                    Craft::info($e, 'publishpdfdebug');
+                    return $this->handleIssuuException($e);
                 }
-                // Craft::info('multipart', 'publishpdfdebug');
-                // Craft::info(json_encode($multipart), 'publishpdfdebug');
-                
-                $response = $this->client->request('POST', 'http://upload.issuu.com/1_0', [
-                    'multipart' => $multipart,
-                    //'query' =>  $query
-                ]);
-            } catch(\Exception $e) {
-                Craft::info($e, 'publishpdfdebug');
-                return $this->handleIssuuException($e);
-            }
 
-            // Craft::info('response', 'publishpdfdebug');
-            // Craft::info($response, 'publishpdfdebug');
-            // Craft::info("getStatusCode:".$response->getStatusCode(), 'publishpdfdebug');
-            // Craft::info("getReasonPhrase:".$response->getReasonPhrase(), 'publishpdfdebug');
-
-            $stream = $response->getBody();
-
-            // Craft::info('stream:', 'publishpdfdebug');
-            // Craft::info($stream, 'publishpdfdebug');
-
-            $contents = json_decode($stream->getContents());
-
-            // Craft::info('contents', 'publishpdfdebug');
-            // Craft::info($contents, 'publishpdfdebug');
-
-            if($contents->rsp->stat == 'ok') {
-                $AssetRecord = new AssetRecord();
-                $AssetRecord->assetId = $asset->id;
-                $AssetRecord->publisherHandle = self::$handle;
-                $AssetRecord->publisherState = 'completed';
-                $AssetRecord->publisherId = $contents->rsp->_content->document->name;
-                $AssetRecord->publisherResponse = json_encode($contents);
-                $url = "https://issuu.com/".\abmat\publishpdf\Plugin::getInstance()->getSettings()->issuuUsername."/docs/".$contents->rsp->_content->document->name;
-                $AssetRecord->publisherUrl = $url;
-
-                $embedUrl = 'https://issuu.com/'.\abmat\publishpdf\Plugin::getInstance()->getSettings()->issuuUsername.'/docs/'.$contents->rsp->_content->document->name.'?mode=window&printButtonEnabled=false';
-                $AssetRecord->publisherEmbedUrl = $embedUrl;
-                
-                $embedCode =  '<iframe allow="clipboard-write" 
-                    sandbox="allow-top-navigation allow-top-navigation-by-user-activation allow-downloads allow-scripts allow-same-origin allow-popups allow-modals allow-popups-to-escape-sandbox allow-forms" 
-                    allowfullscreen="true"
-                    src="'.$embedUrl.'">
-                </iframe>';
-
-                $AssetRecord->publisherEmbedCode = $embedCode;
-                $AssetRecord->insert();
-                return true;
-            } else {
-                if(isset($contents->rsp->_content->error->message)) {
-                    return (string) ($contents->rsp->_content->error->code . " - " . $contents->rsp->_content->error->message);
+                if($response->getStatusCode()==200) {
+                    $AssetRecord = new AssetRecord();
+                    $AssetRecord->assetId = $asset->id;
+                    $AssetRecord->publisherHandle = self::$handle;
+                    $AssetRecord->publisherState = 'progress';
+                    $AssetRecord->publisherId = $slug;
+                    $AssetRecord->insert();
+                    return true;
                 }
-                return 'Error #1';
             }
+            throw new \Exception("Asset upload to Issuu failed");
         }
-        return Craft::t('abm-publishpdf', 'Asset already uploaded to issuu');
+        return Craft::t('abm-publishpdf', 'Asset already uploaded to Issuu');
     }
 
     function deleteAsset(Asset $asset): bool|string
     {
         $AssetRecord = $this->getAssetRecord($asset);
-        if($AssetRecord && $AssetRecord->publisherState == 'completed') {
-            $query = [
-                'action' => 'issuu.document.delete',
-                'apiKey' => \abmat\publishpdf\Plugin::getInstance()->getSettings()->issuuApiKey,
-                'names' => $AssetRecord->publisherId,
-                'format' => 'json'
-            ];
-            $query = $this->_signRequest($query);
-            //Upload asset to Issuu and store infos from Issuu in DB
-            try {
-                $response = $this->client->request('DELETE', 'https://api.issuu.com/1_0', [
-                    'query' => $query
-                ]);
-            } catch(\Exception $e) {
-                return $this->handleIssuuException($e);
-            }
+        if($AssetRecord && $AssetRecord->publisherId !== '') {
+            $slug = $AssetRecord->publisherId;
 
-            $stream = $response->getBody();
-            $contents = json_decode($stream->getContents());
-            if($contents->rsp->stat == 'ok') {
+            if($slug) {
+                try {
+                    $response = $this->httpClient->delete(
+                        "https://api.issuu.com/v2/publications/".$slug,
+                        [
+                            'headers' => [
+                                'Authorization' => 'Bearer '.$this->access_token,
+                            ],
+                        ]
+                    );
+                } catch(GuzzleHttp\Exception\ClientException $e) {
+                    if($e->getCode() == 404) {
+                        $AssetRecord->delete();
+                    }
+                    throw new \Exception("Asset delete error #1: ".$e->getMessage());
+                    return false;
+                    
+                } catch(GuzzleHttp\Exception\ServerException $e) {
+                    throw new \Exception("Asset delete error #2 ".$e->getMessage());
+                    return false;
+                }
                 $AssetRecord->delete();
                 return true;
-            } else {
-                if(isset($contents->rsp->_content->error->message)) {
-                    return (string) ($contents->rsp->_content->error->code . " - " . $contents->rsp->_content->error->message);
-                }
-                return 'Error #1';
             }
+            $AssetRecord->delete();
+            return true;
         }
         return Craft::t('abm-publishpdf', 'Asset not present on issuu');
     }
@@ -229,11 +295,21 @@ class Issuu extends PublishPdfService
 
         $EntryRaw = AssetRecord::find()->where([
 			"publisherHandle" => self::$handle,
-			"publisherState" => 'completed',
+			//"publisherState" => 'completed',
 			"assetId" => $asset->id,
 		])->one();
 
-		return $EntryRaw ? true : false;
+        if($EntryRaw) {
+            if($EntryRaw->publisherState == 'progress') {
+                if($this->checkAssetProgress($EntryRaw)) {
+                    return true;
+                }
+                return false;
+            } else if($EntryRaw->publisherState == 'completed') {
+                return true;
+            }
+        }
+        return false;
     }
 
     function getAssetRecord(Asset $asset): ?AssetRecord
@@ -250,8 +326,30 @@ class Issuu extends PublishPdfService
 		return $EntryRaw ? $EntryRaw : null;
     }
 
-    public function checkAssetProgress(AssetRecord &$EntryRaw): bool
+    public function checkAssetProgress(AssetRecord &$AssetRecord): bool
     {
+        $slug = $AssetRecord->publisherId;
+
+        $body = $this->publishDraft($slug);
+
+        if(is_object($body) && isset($body->publicLocation)) {
+            $AssetRecord->publisherResponse = json_encode($body);
+            $url = $body->publicLocation;
+            $AssetRecord->publisherUrl = $url;
+
+            $embedUrl = $url.'?mode=window&printButtonEnabled=false';
+            $AssetRecord->publisherEmbedUrl = $embedUrl;
+            
+            $embedCode =  '<iframe allow="clipboard-write" 
+                sandbox="allow-top-navigation allow-top-navigation-by-user-activation allow-downloads allow-scripts allow-same-origin allow-popups allow-modals allow-popups-to-escape-sandbox allow-forms" 
+                allowfullscreen="true"
+                src="'.$embedUrl.'">
+            </iframe>';
+
+            $AssetRecord->publisherEmbedCode = $embedCode;
+            $AssetRecord->update();
+            return true;
+        }
         return false;
     }
 }

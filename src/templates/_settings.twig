@@ -6,6 +6,8 @@
 {% import '_includes/forms.twig' as forms %}
 
 <h2>Issuu Settings</h2>
+<p>{{ 'Issuu API v2 required!'|t }}</p>
+
 {{ forms.lightswitchField({
     first: false,
     id: 'issuuEnable',
@@ -16,21 +18,15 @@
 
 
 {{ forms.textField({
-  label: 'Issuu Username',
-  name: 'issuuUsername',
-  value: settings.issuuUsername
+  label: 'Issuu Client ID',
+  name: 'issuuClientId',
+  value: settings.issuuClientId
 }) }}
 
 {{ forms.textField({
-  label: 'Issuu Secret',
-  name: 'issuuSecret',
-  value: settings.issuuSecret
-}) }}
-
-{{ forms.textField({
-  label: 'Issuu API Key',
-  name: 'issuuApiKey',
-  value: settings.issuuApiKey
+  label: 'Issuu Client Secret',
+  name: 'issuuClientSecret',
+  value: settings.issuuClientSecret
 }) }}
 
 {{ forms.lightswitchField({
@@ -44,7 +40,7 @@
 <hr />
 
 <h2>Yumpu Settings</h2>
-<p>{{ 'Please make sure you are using at least a Pro (adFree) account. Otherwise the API interface will not work'|t }}</p><br />
+<p>{{ 'Please make sure you are using at least a Pro (adFree) account. Otherwise the API interface will not work'|t }}</p>
 
 {{ forms.lightswitchField({
     first: false,

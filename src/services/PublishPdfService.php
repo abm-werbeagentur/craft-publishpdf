@@ -14,8 +14,8 @@ class PublishPdfService extends Component
 {
     function handleIssuuException($exception): bool|string
     {
-        Craft::info('handleIssuuException', 'publishpdfdebug');
-        Craft::info($exception, 'publishpdfdebug');
+        Craft::error($exception->getCode() . " - " . $exception->getMessage(), 'publishpdfdebug');
+        throw new \Exception($exception->getCode() . " - " . $exception->getMessage());
         return false;
     }
     function handleYumpuException($exception): bool|string
