@@ -18,7 +18,7 @@ class Yumpu extends PublishPdfService
     public static $handle = 'yumpu';
 
     function __construct() {
-        $token = \abmat\publishpdf\Plugin::getInstance()->getSettings()->yumpuApiToken;
+        $token = \abmat\publishpdf\Plugin::getInstance()->getSettings()->getYumpuApiToken();
         $this->client = new GuzzleHttp\Client(['headers' => ['X-ACCESS-TOKEN' => $token]]);
     }
 

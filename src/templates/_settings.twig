@@ -17,16 +17,18 @@
 }) }}
 
 
-{{ forms.textField({
-  label: 'Issuu Client ID',
-  name: 'issuuClientId',
-  value: settings.issuuClientId
+{{ forms.autosuggestField({
+    label: 'Issuu Client ID',
+    name: 'issuuClientId',
+    value: settings.issuuClientId,
+    suggestEnvVars: true,
 }) }}
 
-{{ forms.textField({
-  label: 'Issuu Client Secret',
-  name: 'issuuClientSecret',
-  value: settings.issuuClientSecret
+{{ forms.autosuggestField({
+    label: 'Issuu Client Secret',
+    name: 'issuuClientSecret',
+    value: settings.issuuClientSecret,
+    suggestEnvVars: true,
 }) }}
 
 {{ forms.lightswitchField({
@@ -50,10 +52,11 @@
     on: settings.yumpuEnable
 }) }}
 
-{{ forms.textField({
-  label: 'Yumpu API Token',
-  name: 'yumpuApiToken',
-  value: settings.yumpuApiToken
+{{ forms.autosuggestField({
+    label: 'Yumpu API Token',
+    name: 'yumpuApiToken',
+    value: settings.yumpuApiToken,
+    suggestEnvVars: true,
 }) }}
 
 {{ forms.lightswitchField({

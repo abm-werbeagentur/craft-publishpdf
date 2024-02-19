@@ -24,8 +24,8 @@ class Issuu extends PublishPdfService
     private $token_url = "https://oauth.issuu.com/oauth2/token";
 
     function __construct() {
-        $this->client_id = \abmat\publishpdf\Plugin::getInstance()->getSettings()->issuuClientId;
-        $this->client_secret = \abmat\publishpdf\Plugin::getInstance()->getSettings()->issuuClientSecret;
+        $this->client_id = \abmat\publishpdf\Plugin::getInstance()->getSettings()->getIssuuClientId();
+        $this->client_secret = \abmat\publishpdf\Plugin::getInstance()->getSettings()->getIssuuClientSecret();
 
         $this->httpClient = new GuzzleHttp\Client();
 
@@ -163,7 +163,7 @@ class Issuu extends PublishPdfService
         }
 
         if($do_upload) {
-            $pdf_title = str_replace("  "," ",preg_replace("/[^a-zA-Z0-9_.\-\s]/","",trim($asset->filename)));
+            $pdf_title = str_replace("  "," ",preg_replace("/[^a-zA-Z0-9_.\-\s]/","",trim($asset->filename))) . " -".$asset->id;
 
             try {
                 $response = $this->httpClient->post(
