@@ -347,6 +347,7 @@ class Issuu extends PublishPdfService
             </iframe>';
 
             $AssetRecord->publisherEmbedCode = $embedCode;
+            $AssetRecord->publisherState = 'completed';
             $AssetRecord->update();
             return true;
         }
