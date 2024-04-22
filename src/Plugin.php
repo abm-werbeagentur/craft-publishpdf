@@ -52,7 +52,7 @@ use craft\events\RegisterUrlRulesEvent;
 use craft\events\RegisterUserPermissionsEvent;
 use craft\events\RegisterElementActionsEvent;
 use craft\events\RegisterElementTableAttributesEvent;
-use craft\events\SetElementTableAttributeHtmlEvent;
+use craft\events\DefineAttributeHtmlEvent;
 use craft\events\ReplaceAssetEvent;
 use craft\services\Assets;
 use craft\services\UserPermissions;
@@ -191,7 +191,7 @@ class Plugin extends BasePlugin
             ];
         });
 
-        Event::on(Asset::class, Asset::EVENT_SET_TABLE_ATTRIBUTE_HTML, function (SetElementTableAttributeHtmlEvent $event) {
+        Event::on(Asset::class, Asset::EVENT_DEFINE_ATTRIBUTE_HTML, function (DefineAttributeHtmlEvent $event) {
             if ($event->attribute === 'yumpu') {
                 /** @var Asset $asset */
                 $asset = $event->sender;
