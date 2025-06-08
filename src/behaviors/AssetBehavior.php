@@ -45,11 +45,24 @@ class AssetBehavior extends Behavior
         }
         return null;
     }
-
+    private function _getUsername(): ?string
+    {
+        if (preg_match('/issuu\.com\/([^\/]+)\/docs/', $this->issuuGetLink(), $matches)) {
+            $username = $matches[1];
+            return $username;
+        } else {
+            return null;
+        }
+    }
     public function issuuGetEmbedUrl(): ?string
     {
         if($AssetRecord = $this->_issuuGetRecord($this->owner)) {
-            return $AssetRecord->publisherEmbedUrl;
+            $username = $this->_getUsername();
+            $id = $this->issuuGetId();
+            if($username && $id) {
+                return "https://e.issuu.com/embed.html?d=".$id."&u=".$username;
+            }
+            //return $AssetRecord->publisherEmbedUrl;
         }
         return null;
     }
@@ -57,7 +70,14 @@ class AssetBehavior extends Behavior
     public function issuuGetEmbedCode(): ?string
     {
         if($AssetRecord = $this->_issuuGetRecord($this->owner)) {
-            return $AssetRecord->publisherEmbedCode;
+            return '
+                <iframe 
+                    allow="clipboard-write" 
+                    sandbox="allow-top-navigation allow-top-navigation-by-user-activation allow-downloads allow-scripts allow-same-origin allow-popups allow-modals allow-popups-to-escape-sandbox allow-forms" 
+                    allowfullscreen="true" 
+                    src="'.$this->issuuGetEmbedUrl().'">
+                </iframe>';
+            // return $AssetRecord->publisherEmbedCode;
         }
         return null;
     }
