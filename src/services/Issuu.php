@@ -33,28 +33,33 @@ class Issuu extends PublishPdfService
     }
 
     private function grantCredentials() {
-		$response = $this->httpClient->post(
-			$this->token_url,
-			[
-				'form_params' => [
-					'grant_type' => 'client_credentials',
-					'client_id' => $this->client_id,
-					'client_secret' => $this->client_secret,
-					'scope' => 'document:read document:write',
-				]
-			]
-		);
+        try {
+            $response = $this->httpClient->post(
+                $this->token_url,
+                [
+                    'form_params' => [
+                        'grant_type' => 'client_credentials',
+                        'client_id' => $this->client_id,
+                        'client_secret' => $this->client_secret,
+                        'scope' => 'document:read document:write',
+                    ]
+                ]
+            );
 
-		if($response->getStatusCode()==200) {
-			$body = json_decode($response->getBody()->getContents());
-			if(isset($body->access_token)) {
-				$this->access_token = $body->access_token;
-			}
-		}
+            if($response->getStatusCode()==200) {
+                $body = json_decode($response->getBody()->getContents());
+                if(isset($body->access_token)) {
+                    $this->access_token = $body->access_token;
+                }
+            }
 
-		if(!$this->access_token) {
-			throw new \Exception("failed auth with client_credentials");
-		}
+            if(!$this->access_token) {
+                throw new \Exception("failed auth with client_credentials");
+            }
+        } catch(\Exception $exception) {
+            Craft::error($exception->getCode() . " - " . $exception->getMessage(), 'publishpdfdebug');
+            return false;
+        }
 	}
 
     private function _checkResponseError($contents): bool|string

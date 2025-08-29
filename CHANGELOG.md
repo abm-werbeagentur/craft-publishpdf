@@ -1,5 +1,8 @@
 # Release Notes for craft-issuu
 
+## 2.0.2
+- Handle if Issuu not reachable
+
 ## 2.0.1
 - Updated Issuu embed URLs for issuuGetEmbedUrl and issuuGetEmbedCode
 
