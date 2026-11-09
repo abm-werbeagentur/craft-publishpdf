@@ -90,20 +90,35 @@ class Yumpu extends PublishPdfService
         }
 
         if($do_upload) {
+            $multipart = [
+                [
+                    'name' => 'file',
+                    'contents' => $asset->getContents(),
+                    'filename' => $asset->filename
+                ],
+                [
+                    'name' => 'title',
+                    'contents' => $asset->title
+                ]
+            ];
+
+            $settings = \abmat\publishpdf\Plugin::getInstance()->getSettings();
+            $domains = trim((string)$settings->yumpuDomains);
+            if($settings->yumpuVisibilityDomainProtected && $domains !== '') {
+                $multipart[] = [
+                    'name' => 'visibility',
+                    'contents' => 'dprotected'
+                ];
+                $multipart[] = [
+                    'name' => 'domains',
+                    'contents' => $domains
+                ];
+            }
+
             //Upload asset to Yumpu and store infos from Yumpu in DB
             try {
                 $response = $this->client->request('POST', 'https://api.yumpu.com/2.0/document/file.json', [
-                    'multipart' => [
-                        [
-                            'name' => 'file',
-                            'contents' => $asset->getContents(),
-                            'filename' => $asset->filename
-                        ],
-                        [
-                            'name' => 'title',
-                            'contents' => $asset->title
-                        ]
-                    ]
+                    'multipart' => $multipart
                 ]);
             } catch(\Exception $e) {
                 return $this->handleYumpuException($e);

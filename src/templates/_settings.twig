@@ -67,4 +67,24 @@
     on: settings.yumpuDeleteIfAssetDeleted
 }) }}
 
+{{ forms.lightswitchField({
+    first: false,
+    id: 'yumpuVisibilityDomainProtected',
+    name: 'yumpuVisibilityDomainProtected',
+    label: 'Visibility dprotected (Protected by domain)' | t('abm-publishpdf'),
+    instructions: 'Protect the visibility of the document by specifying allowed domains (only for new uploads!)' | t('abm-publishpdf'),
+    on: settings.yumpuVisibilityDomainProtected,
+    toggle: 'yumpuDomains-field-wrapper',
+}) }}
+
+<div id="yumpuDomains-field-wrapper" class="{{ not settings.yumpuVisibilityDomainProtected ? 'hidden' }}">
+    {{ forms.textField({
+        label: 'Domains' | t('abm-publishpdf'),
+        instructions: 'Comma separated list of domains (e.g. example.com,blog.example.com)' | t('abm-publishpdf'),
+        id: 'yumpuDomains',
+        name: 'yumpuDomains',
+        value: settings.yumpuDomains,
+    }) }}
+</div>
+
 {# Genböck Yumpu API Token: z8IeFtS6EMf1jLQbuT0WHayo7mxdJ4Oi #}

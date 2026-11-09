@@ -46,6 +46,16 @@ class Settings extends Model
 	 */
     public $yumpuDeleteIfAssetDeleted = false;
 
+    /**
+	 * @var bool
+	 */
+    public $yumpuVisibilityDomainProtected = false;
+
+    /**
+	 * @var string
+	 */
+    public $yumpuDomains = '';
+
 
     /**
 	 * @return string
